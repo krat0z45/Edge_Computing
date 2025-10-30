@@ -39,7 +39,7 @@ Manifests:
 
 export function ToolSection() {
   return (
-    <section id="tool" className="w-full py-12 md:py-24 lg:py-32 bg-card">
+    <section id="tool" className="w-full py-12 md:py-24 lg:py-32 bg-background">
       <div className="container mx-auto px-4 md:px-6">
         <Card className="shadow-lg">
           <CardHeader>
