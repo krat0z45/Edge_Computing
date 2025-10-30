@@ -4,24 +4,24 @@
 
 @layer base {
   :root {
-    --background: 222 84% 4%;
+    --background: 222 44% 15%;
     --foreground: 210 40% 98%;
-    --card: 222 84% 6%;
+    --card: 222 44% 18%;
     --card-foreground: 210 40% 98%;
-    --popover: 222 84% 6%;
+    --popover: 222 44% 18%;
     --popover-foreground: 210 40% 98%;
     --primary: 210 40% 98%;
     --primary-foreground: 222 84% 10%;
-    --secondary: 217 33% 17%;
+    --secondary: 217 33% 25%;
     --secondary-foreground: 210 40% 98%;
-    --muted: 217 33% 17%;
+    --muted: 217 33% 25%;
     --muted-foreground: 215 25% 65%;
-    --accent: 217 33% 17%;
+    --accent: 217 33% 25%;
     --accent-foreground: 210 40% 98%;
     --destructive: 0 63% 31%;
     --destructive-foreground: 210 40% 98%;
-    --border: 217 33% 17%;
-    --input: 217 33% 17%;
+    --border: 217 33% 25%;
+    --input: 217 33% 25%;
     --ring: 213 90% 65%;
     --chart-1: 204 90% 50%;
     --chart-2: 210 80% 60%;
@@ -39,24 +39,24 @@
     --sidebar-ring: 204 90% 50%;
   }
   .dark {
-    --background: 222 84% 4%;
+    --background: 222 44% 15%;
     --foreground: 210 40% 98%;
-    --card: 222 84% 6%;
+    --card: 222 44% 18%;
     --card-foreground: 210 40% 98%;
-    --popover: 222 84% 6%;
+    --popover: 222 44% 18%;
     --popover-foreground: 210 40% 98%;
     --primary: 210 40% 98%;
     --primary-foreground: 222 84% 10%;
-    --secondary: 217 33% 17%;
+    --secondary: 217 33% 25%;
     --secondary-foreground: 210 40% 98%;
-    --muted: 217 33% 17%;
+    --muted: 217 33% 25%;
     --muted-foreground: 215 25% 65%;
-    --accent: 217 33% 17%;
+    --accent: 217 33% 25%;
     --accent-foreground: 210 40% 98%;
     --destructive: 0 63% 31%;
     --destructive-foreground: 210 40% 98%;
-    --border: 217 33% 17%;
-    --input: 217 33% 17%;
+    --border: 217 33% 25%;
+    --input: 217 33% 25%;
     --ring: 213 90% 65%;
     --chart-1: 204 90% 50%;
     --chart-2: 210 80% 60%;
@@ -115,6 +115,7 @@
   background: white;
   border-radius: 50%;
   animation: animate-sparkles linear infinite;
+  box-shadow: 0 0 10px 2px white, 0 0 20px 5px #0ff, 0 0 40px 10px #0ff;
 }
 
 .sparkle.s1 {
