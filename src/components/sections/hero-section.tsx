@@ -13,7 +13,7 @@ export function HeroSection() {
         className="object-cover"
         priority
       />
-      <div className="absolute inset-0 bg-black/60" />
+      <div className="absolute inset-0 bg-black/40" />
       <div className="relative container mx-auto px-4 md:px-6">
         <div className="flex flex-col items-center space-y-4">
           <div className="space-y-2">
