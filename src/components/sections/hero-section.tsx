@@ -7,7 +7,7 @@ export function HeroSection() {
   return (
     <section className="relative w-full h-[60vh] min-h-[400px] flex items-center justify-center text-center text-white">
       <Image
-        src="https://img.freepik.com/premium-photo/edge-computing-image_1084438-18478.jpg"
+        src="https://www.fortiss.org/fileadmin/_processed_/c/3/csm_2021_12_22_Edge_Computing_Whitepaper_83f480a817.png"
         alt="Edge Computing"
         fill
         className="object-cover"
