@@ -29,6 +29,24 @@
       "description": "A photo of a smart city or an autonomous vehicle, representing a real-world use case for edge computing.",
       "imageUrl": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxzbWFydCUyMGNpdHl8ZW58MHx8fHwxNzYxNzcyNTU4fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "smart city"
+    },
+    {
+      "id": "cristian-esparza",
+      "description": "Profile picture for Cristian Adrian Esparza Cortes.",
+      "imageUrl": "https://images.unsplash.com/photo-1489514427794-bb4f67f45c7e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxwcm9maWxlJTIwcG9ydHJhaXR8ZW58MHx8fHwxNzYxODQ0MjIwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "profile portrait"
+    },
+    {
+      "id": "diego-esparza",
+      "description": "Profile picture for Diego Ricardo Esparza Cortes.",
+      "imageUrl": "https://images.unsplash.com/photo-1489514427794-bb4f67f45c7e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxwcm9maWxlJTIwcG9ydHJhaXR8ZW58MHx8fHwxNzYxODQ0MjIwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "profile portrait"
+    },
+    {
+      "id": "gerardo-carrillo",
+      "description": "Profile picture for Gerardo Alejando Carrillo Aguirre.",
+      "imageUrl": "https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxwcm9maWxlJTIwcG9ydHJhaXR8ZW58MHx8fHwxNzYxODQ0MjIwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "profile portrait"
     }
   ]
 }
