@@ -208,8 +208,9 @@ export function EdgeSimulator() {
     setIsSimulating(true);
 
     if (type === 'normal') {
-        setCarStatus('accelerating');
+        playSound('voice', { text: 'Iniciando conducción normal' });
         addLog(setDeviceLogs, `Iniciando conducción normal. Acelerando a 100 km/h.`, 'info');
+        setCarStatus('accelerating');
         simulateProgressiveChange(simulationData.speed, 100, 2000, 
             (speed) => {
                 setSimulationData(prev => ({ ...prev, speed }));
@@ -224,11 +225,13 @@ export function EdgeSimulator() {
     }
 
     if (type === 'obstacle') {
+        playSound('voice', { text: 'Obstáculo detectado' });
         addLog(setDeviceLogs, `¡Obstáculo detectado!`, 'alert');
         playSound('alert', { duration: 0.5 });
         setSimulationData(prev => ({...prev, obstacle: true}));
         
         setTimeout(() => {
+             playSound('voice', { text: 'Frenado de emergencia activado' });
              addLog(setGatewayLogs, `Obstáculo confirmado. Iniciando frenado de emergencia.`, 'action');
              setCarStatus('braking');
              playSound('brake', { duration: 1.0 });
@@ -241,6 +244,7 @@ export function EdgeSimulator() {
                     addLog(setGatewayLogs, `Vehículo detenido. Esperando a que el obstáculo se despeje.`, 'info');
                     addLog(setCloudLogs, `Incidente de Frenado de Emergencia registrado.`, 'summary');
                     setTimeout(() => {
+                        playSound('voice', { text: 'Obstáculo despejado. Reanudando la marcha.' });
                         addLog(setDeviceLogs, `El obstáculo se ha despejado. Reanudando la marcha.`, 'info');
                         setSimulationData(prev => ({...prev, obstacle: false}));
                         setCarStatus('accelerating');
@@ -432,5 +436,3 @@ export function EdgeSimulator() {
     </div>
   );
 }
-
-    
