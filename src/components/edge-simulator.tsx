@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Thermometer, MotionSensor, Server, Cloud, Bot, Milestone } from 'lucide-react';
+import { Thermometer, Siren, Server, Cloud, Bot, Milestone } from 'lucide-react';
 import { ScrollArea } from './ui/scroll-area';
 import { cn } from '@/lib/utils';
 
@@ -24,7 +24,7 @@ const LogIcon = ({ type }: { type: LogEntry['type'] }) => {
     case 'data':
       return <Thermometer className="h-4 w-4 text-muted-foreground" />;
     default:
-      return <MotionSensor className="h-4 w-4 text-muted-foreground" />;
+      return <Siren className="h-4 w-4 text-muted-foreground" />;
   }
 };
 
@@ -157,7 +157,7 @@ export function EdgeSimulator() {
                 Simular Temperatura
               </Button>
               <Button onClick={() => simulateDeviceEvent('motion')} disabled={isSimulating} variant="destructive">
-                 <MotionSensor className="mr-2 h-4 w-4" />
+                 <Siren className="mr-2 h-4 w-4" />
                 Simular Movimiento
               </Button>
                <Button onClick={handleReset} variant="secondary">
