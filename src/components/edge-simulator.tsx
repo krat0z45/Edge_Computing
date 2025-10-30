@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Bot, Cloud, Milestone, Server, Siren, Car, AlertTriangle, Snowflake, Sun } from 'lucide-react';
+import { Bot, Cloud, Milestone, Server, Siren, Car, AlertTriangle, Zap } from 'lucide-react';
 import { ScrollArea } from './ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { SmartCarMockup } from './smart-car-mockup';
@@ -14,7 +14,7 @@ type LogEntry = {
   timestamp: string;
 };
 
-type CarStatus = 'normal' | 'alert' | 'weather_alert';
+type CarStatus = 'normal' | 'braking' | 'accelerating' | 'failure';
 
 export function EdgeSimulator() {
   const [deviceLogs, setDeviceLogs] = useState<LogEntry[]>([]);
@@ -22,7 +22,16 @@ export function EdgeSimulator() {
   const [cloudLogs, setCloudLogs] = useState<LogEntry[]>([]);
   const [isSimulating, setIsSimulating] = useState(false);
   const [carStatus, setCarStatus] = useState<CarStatus>('normal');
-  const [simulationData, setSimulationData] = useState({ speed: 80, obstacle: false, weather: 'clear' });
+  const [simulationData, setSimulationData] = useState({ speed: 80, obstacle: false, failure: false });
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, []);
 
   const addLog = (
     setter: React.Dispatch<React.SetStateAction<LogEntry[]>>,
@@ -32,79 +41,94 @@ export function EdgeSimulator() {
     const timestamp = new Date().toLocaleTimeString();
     setter((prev) => [{ message, type, timestamp }, ...prev].slice(0, 100));
   };
+  
+  const manageSpeed = (targetSpeed: number, rate: number, onComplete?: () => void) => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
 
-  const simulateDeviceEvent = (type: 'normal' | 'obstacle' | 'weather') => {
+    intervalRef.current = setInterval(() => {
+      setSimulationData(prev => {
+        const currentSpeed = prev.speed;
+        if (currentSpeed < targetSpeed) {
+          const newSpeed = Math.min(currentSpeed + rate, targetSpeed);
+          if (newSpeed === targetSpeed && onComplete) onComplete();
+          return { ...prev, speed: newSpeed };
+        } else if (currentSpeed > targetSpeed) {
+          const newSpeed = Math.max(currentSpeed - rate, targetSpeed);
+          if (newSpeed === targetSpeed && onComplete) onComplete();
+          return { ...prev, speed: newSpeed };
+        } else {
+          if (intervalRef.current) clearInterval(intervalRef.current);
+          if (onComplete) onComplete();
+          return prev;
+        }
+      });
+    }, 100);
+  };
+
+  const simulateDeviceEvent = (type: 'normal' | 'obstacle' | 'failure') => {
+    if(isSimulating) return;
     setIsSimulating(true);
-    let eventData: any;
-    let localStatus: CarStatus = 'normal';
 
     if (type === 'normal') {
-        const speed = Math.floor(Math.random() * 20) + 70; // 70-90 km/h
-        eventData = { type: 'DRIVING_DATA', speed, timestamp: Date.now() };
-        setSimulationData({ speed, obstacle: false, weather: 'clear' });
-        addLog(setDeviceLogs, `Datos de conducción: Velocidad ${speed} km/h`, 'data');
-    } else if (type === 'obstacle') {
-        const distance = (Math.random() * 30 + 10).toFixed(1); // 10-40 meters
-        eventData = { type: 'OBSTACLE_AHEAD', distance, timestamp: Date.now() };
-        setSimulationData(prev => ({ ...prev, obstacle: true }));
-        localStatus = 'alert';
-        addLog(setDeviceLogs, `¡Obstáculo detectado! Objeto a ${distance}m.`, 'alert');
-    } else { // weather
-        eventData = { type: 'WEATHER_CHANGE', condition: 'Lluvia Intensa', timestamp: Date.now() };
-        setSimulationData(prev => ({ ...prev, weather: 'rain' }));
-        localStatus = 'weather_alert';
-        addLog(setDeviceLogs, `Sensor de clima: ${eventData.condition}.`, 'warning');
-    }
-    
-    setCarStatus(localStatus);
-    
-    setTimeout(() => {
-      addLog(setGatewayLogs, `Recibiendo datos de los sensores del vehículo...`);
-      simulateGatewayProcessing(eventData, localStatus);
-    }, 500);
-    
-    const simulationDuration = 3000;
-    setTimeout(() => {
-        setIsSimulating(false);
-        setSimulationData(prev => ({ ...prev, obstacle: false, weather: 'clear' }));
+      setCarStatus('accelerating');
+      addLog(setDeviceLogs, `Iniciando conducción normal.`, 'info');
+      manageSpeed(80, 2, () => {
+        addLog(setGatewayLogs, `Velocidad de crucero alcanzada: 80 km/h.`, 'data');
         setCarStatus('normal');
-    }, simulationDuration);
-  };
-
-  const simulateGatewayProcessing = (data: any, status: CarStatus) => {
-    if (data.type === 'DRIVING_DATA') {
-      addLog(setGatewayLogs, `Procesando: Velocidad ${data.speed} km/h. Ruta estable.`, 'data');
-       if(Math.random() > 0.8) {
-        addLog(setGatewayLogs, `Optimizando consumo de batería.`, 'info');
-        setTimeout(() => simulateCloudProcessing({type: 'EFFICIENCY_LOG', message: 'Ajuste menor de energía realizado.'}), 1000);
-      }
-    } else if (data.type === 'OBSTACLE_AHEAD') {
-      addLog(setGatewayLogs, `¡ACCIÓN INMEDIATA! Frenado de emergencia activado. Obstáculo a ${data.distance}m.`, 'action');
-      setTimeout(() => simulateCloudProcessing({ ...data, reason: 'Frenado automático por seguridad.' }), 500);
-    } else if (data.type === 'WEATHER_CHANGE') {
-      addLog(setGatewayLogs, `ADVERTENCIA DE CLIMA: ${data.condition}. Reduciendo velocidad y activando limpiaparabrisas.`, 'warning');
-      setSimulationData(prev => ({...prev, speed: 60}));
-      setTimeout(() => simulateCloudProcessing({ ...data, action: 'Velocidad reducida a 60 km/h por seguridad.'}), 500);
-    }
-  };
-
-  const simulateCloudProcessing = (data: any) => {
-    if (data.type === 'OBSTACLE_AHEAD') {
-      addLog(setCloudLogs, `Incidente Crítico Registrado: ${data.reason} Vehículo evitó colisión.`, 'alert');
-    } else if (data.type === 'WEATHER_CHANGE') {
-      addLog(setCloudLogs, `Alerta de Flota: ${data.condition} reportada en la zona. Notificando a otros vehículos.`, 'warning');
-    } else if (data.type === 'EFFICIENCY_LOG') {
-      addLog(setCloudLogs, `Registro de telemetría: ${data.message} Almacenando para análisis de rendimiento.`, 'summary');
+        setIsSimulating(false);
+      });
+    } else if (type === 'obstacle') {
+        const distance = (Math.random() * 30 + 10).toFixed(1);
+        addLog(setDeviceLogs, `¡Obstáculo detectado! Objeto a ${distance}m.`, 'alert');
+        setSimulationData(prev => ({ ...prev, obstacle: true }));
+        setCarStatus('braking');
+        
+        addLog(setGatewayLogs, `¡ACCIÓN INMEDIATA! Frenado de emergencia progresivo activado.`, 'action');
+        manageSpeed(10, 5, () => {
+            addLog(setGatewayLogs, `Vehículo detenido de forma segura.`, 'info');
+            setTimeout(() => {
+                addLog(setDeviceLogs, `Obstáculo despejado. Reanudando marcha.`, 'info');
+                setSimulationData(prev => ({ ...prev, obstacle: false }));
+                setCarStatus('accelerating');
+                addLog(setGatewayLogs, `Acelerando progresivamente a velocidad de crucero.`, 'action');
+                manageSpeed(80, 2, () => {
+                  setCarStatus('normal');
+                  setIsSimulating(false);
+                  addLog(setCloudLogs, `Incidente de Obstáculo Registrado y Resuelto.`, 'summary');
+                });
+            }, 2000);
+        });
+    } else { // failure
+        addLog(setDeviceLogs, `¡FALLA CRÍTICA! El acelerador no responde.`, 'alert');
+        setSimulationData(prev => ({ ...prev, failure: true }));
+        setCarStatus('failure');
+        
+        addLog(setGatewayLogs, `Anomalía detectada en el sistema de propulsión.`, 'warning');
+        manageSpeed(140, 15, () => {
+            addLog(setGatewayLogs, `¡PELIGRO INMINENTE! Desbordamiento de velocidad.`, 'alert');
+            
+            setTimeout(() => {
+                addLog(setGatewayLogs, `Sistema de anulación de emergencia activado. Cortando aceleración.`, 'action');
+                manageSpeed(0, 20, () => {
+                    addLog(setGatewayLogs, `Falla contenida. El vehículo se ha detenido.`, 'info');
+                    addLog(setCloudLogs, `Falla Crítica de Acelerador Registrada. Sistema de anulación fue exitoso.`, 'alert');
+                    setCarStatus('normal');
+                    setSimulationData(prev => ({ ...prev, failure: false }));
+                    setIsSimulating(false);
+                });
+            }, 1000);
+        });
     }
   };
 
   const handleReset = () => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
     setDeviceLogs([]);
     setGatewayLogs([]);
     setCloudLogs([]);
     setIsSimulating(false);
     setCarStatus('normal');
-    setSimulationData({ speed: 80, obstacle: false, weather: 'clear' });
+    setSimulationData({ speed: 80, obstacle: false, failure: false });
   };
 
   const LogIcon = ({ type }: { type: LogEntry['type'] }) => {
@@ -164,13 +188,13 @@ export function EdgeSimulator() {
                 <Car className="mr-2 h-4 w-4" />
                 Conducción Normal
               </Button>
-              <Button onClick={() => simulateDeviceEvent('obstacle')} disabled={isSimulating} variant="destructive">
+              <Button onClick={() => simulateDeviceEvent('obstacle')} disabled={isSimulating} variant="secondary">
                  <Siren className="mr-2 h-4 w-4" />
                 Simular Obstáculo
               </Button>
-               <Button onClick={() => simulateDeviceEvent('weather')} disabled={isSimulating} variant="secondary">
-                 <Snowflake className="mr-2 h-4 w-4" />
-                Simular Mal Clima
+               <Button onClick={() => simulateDeviceEvent('failure')} disabled={isSimulating} variant="destructive">
+                 <Zap className="mr-2 h-4 w-4" />
+                Falla del Acelerador
               </Button>
             </div>
              <Button onClick={handleReset} variant="ghost" className='w-full sm:w-auto'>
@@ -227,5 +251,3 @@ export function EdgeSimulator() {
     </div>
   );
 }
-
-    
