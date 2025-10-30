@@ -17,38 +17,58 @@ import {
 const edgeArchitecturePattern = [
   {
     factor: 'Conectores',
-    description:
-      'Protocolos de comunicación como MQTT, CoAP y HTTP/S que permiten el flujo de datos entre dispositivos, servidores de borde y la nube.',
+    description: [
+      'Cómputo, Red, Sensores/Actuadores, Sincronización con la Nube.',
+      'Interconexiones entre dispositivos edge, gateways, redes locales y servicios en la nube.',
+    ],
   },
   {
     factor: 'Elementos de Datos',
-    description:
-      'Datos crudos de sensores, transmisiones de video, interacciones de usuario e información procesada que fluye a través de los niveles de la arquitectura.',
+    description: [
+      'Flujos de datos en tiempo real, resultados procesados localmente, metadatos, señales de control.',
+      'Datos generados y tratados cerca de la fuente, con flujo selectivo hacia la nube o actuadores.',
+    ],
   },
   {
     factor: 'Configuración',
-    description:
-      'Una disposición por niveles de componentes: dispositivos de IoT/usuario, nodos de borde locales (gateways), servidores de borde regionales y la nube central.',
+    description: [
+      'Nodos descentralizados organizados en jerarquía o malla.',
+      'Los nodos edge están distribuidos físicamente, con procesamiento local y sincronización ocasional con la nube.',
+    ],
   },
   {
     factor: 'Restricciones',
-    description:
-      'Potencia computacional y almacenamiento limitados en dispositivos de borde; potencial de conectividad de red intermitente.',
+    description: [
+      'Las operaciones sensibles a la latencia deben ejecutarse localmente.',
+      'Los enlaces con ancho de banda limitado restringen el envío masivo a la nube.',
+      'No deben existir dependencias circulares entre edge y nube en rutas críticas.',
+    ],
+    isList: true,
   },
   {
     factor: 'Cualidades',
-    description:
-      'Baja latencia, consumo reducido de ancho de banda, mejora de la privacidad y seguridad de los datos, mayor fiabilidad y escalabilidad.',
+    description: [
+      'Reduce la latencia y el uso de ancho de banda.',
+      'Mejora la respuesta en tiempo real.',
+      'Aumenta la tolerancia a fallos y autonomía.',
+      'Refuerza la privacidad al mantener datos sensibles en el borde.',
+    ],
+    isList: true,
   },
   {
     factor: 'Usos Típicos',
-    description:
-      'Vehículos autónomos, monitoreo industrial en tiempo real (IIoT), ciudades inteligentes, redes de entrega de contenido (CDNs) y experiencias de venta minorista interactivas.',
+    description: [
+      'Aplicaciones IoT, vehículos autónomos, fábricas inteligentes, realidad aumentada/virtual, análisis de video, monitoreo médico remoto.',
+    ],
   },
   {
     factor: 'Precauciones',
-    description:
-      'Mayor complejidad en la implementación y gestión; desafíos para asegurar un gran número de dispositivos distribuidos y garantizar la consistencia de los datos.',
+    description: [
+      'Gestionar hardware y sistemas operativos heterogéneos en los nodos edge es complejo.',
+      'La seguridad en el borde es más difícil de implementar que en la nube centralizada.',
+      'La orquestación y actualización de nodos requiere prácticas DevOps robustas.',
+    ],
+    isList: true,
   },
 ];
 
@@ -71,7 +91,7 @@ export function FactorsSection() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[150px]">Componente</TableHead>
+                    <TableHead className="w-[200px]">Factor</TableHead>
                     <TableHead>Descripción</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -81,7 +101,17 @@ export function FactorsSection() {
                       <TableCell className="font-medium">
                         {item.factor}
                       </TableCell>
-                      <TableCell>{item.description}</TableCell>
+                      <TableCell>
+                        {item.isList ? (
+                          <ul className="list-disc list-inside space-y-1">
+                            {item.description.map((point, index) => (
+                              <li key={index}>{point}</li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p>{item.description.join(' ')}</p>
+                        )}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
