@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Bot, Cloud, Milestone, Server, Siren, Car, AlertTriangle, Zap } from 'lucide-react';
+import { Bot, Cloud, Milestone, Server, Siren, Car, AlertTriangle, Zap, Power } from 'lucide-react';
 import { ScrollArea } from './ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { SmartCarMockup } from './smart-car-mockup';
@@ -16,7 +16,7 @@ type LogEntry = {
 
 type CarStatus = 'normal' | 'braking' | 'accelerating' | 'failure';
 
-type SoundType = 'engine' | 'brake' | 'alert' | 'alarm' | 'powerDown' | 'confirmation' | 'voice';
+type SoundType = 'engine' | 'brake' | 'alert' | 'alarm' | 'powerDown' | 'confirmation' | 'voice' | 'engineStart';
 
 type PlaySoundOptions = {
   duration?: number;
@@ -121,6 +121,13 @@ export function EdgeSimulator() {
     const duration = options.duration || 0.5;
 
     switch(type) {
+        case 'engineStart':
+            oscillator.type = 'sawtooth';
+            gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+            oscillator.frequency.setValueAtTime(30, audioContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(80, audioContext.currentTime + duration * 0.5);
+            gainNode.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + duration);
+            break;
         case 'brake':
             oscillator.type = 'sine';
             gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
@@ -373,7 +380,11 @@ export function EdgeSimulator() {
             <p className="text-sm text-muted-foreground text-center md:text-left">Genera eventos de sensores para ver cómo responde el sistema del coche autónomo.</p>
         </div>
         <div className="flex flex-col sm:flex-row lg:flex-col gap-2 w-full lg:col-span-2">
-            <div className='flex-1 grid grid-cols-1 sm:grid-cols-3 gap-2'>
+            <div className='flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2'>
+               <Button onClick={() => playSound('engineStart', { duration: 0.7 })} disabled={isSimulating}>
+                <Power className="mr-2 h-4 w-4" />
+                Encender Motor
+              </Button>
               <Button onClick={() => simulateDeviceEvent('normal')} disabled={isSimulating}>
                 <Car className="mr-2 h-4 w-4" />
                 Conducción Normal
@@ -387,7 +398,7 @@ export function EdgeSimulator() {
                 Falla del Acelerador
               </Button>
             </div>
-             <Button onClick={handleReset} variant="ghost" className='w-full sm:w-auto'>
+             <Button onClick={handleReset} variant="ghost" className='w-full sm:w-auto lg:w-full mt-2 lg:mt-0'>
                 Reiniciar Simulación
             </Button>
         </div>
