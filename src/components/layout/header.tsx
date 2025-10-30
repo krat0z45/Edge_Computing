@@ -8,7 +8,7 @@ export function Header() {
         <Link href="/" className="flex items-center gap-2">
           <Cpu className="h-8 w-8 text-primary" />
           <span className="text-xl font-bold text-foreground">
-            Arquitecto Edge
+            Edge Computing Architecture
           </span>
         </Link>
         <nav className="hidden items-center gap-6 text-sm font-medium md:flex">

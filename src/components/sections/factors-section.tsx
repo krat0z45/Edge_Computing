@@ -16,28 +16,28 @@ import {
 
 const edgeArchitecturePattern = [
   {
-    factor: 'Conectores',
+    factor: 'Connectors',
     description: [
       'Cómputo, Red, Sensores/Actuadores, Sincronización con la Nube.',
       'Interconexiones entre dispositivos edge, gateways, redes locales y servicios en la nube.',
     ],
   },
   {
-    factor: 'Elementos de Datos',
+    factor: 'Data Elements',
     description: [
       'Flujos de datos en tiempo real, resultados procesados localmente, metadatos, señales de control.',
       'Datos generados y tratados cerca de la fuente, con flujo selectivo hacia la nube o actuadores.',
     ],
   },
   {
-    factor: 'Configuración',
+    factor: 'Configuration',
     description: [
       'Nodos descentralizados organizados en jerarquía o malla.',
       'Los nodos edge están distribuidos físicamente, con procesamiento local y sincronización ocasional con la nube.',
     ],
   },
   {
-    factor: 'Restricciones',
+    factor: 'Constraints',
     description: [
       'Las operaciones sensibles a la latencia deben ejecutarse localmente.',
       'Los enlaces con ancho de banda limitado restringen el envío masivo a la nube.',
@@ -46,7 +46,7 @@ const edgeArchitecturePattern = [
     isList: true,
   },
   {
-    factor: 'Cualidades',
+    factor: 'Qualities',
     description: [
       'Reduce la latencia y el uso de ancho de banda.',
       'Mejora la respuesta en tiempo real.',
@@ -56,13 +56,13 @@ const edgeArchitecturePattern = [
     isList: true,
   },
   {
-    factor: 'Usos Típicos',
+    factor: 'Typical Uses',
     description: [
       'Aplicaciones IoT, vehículos autónomos, fábricas inteligentes, realidad aumentada/virtual, análisis de video, monitoreo médico remoto.',
     ],
   },
   {
-    factor: 'Precauciones',
+    factor: 'Precautions',
     description: [
       'Gestionar hardware y sistemas operativos heterogéneos en los nodos edge es complejo.',
       'La seguridad en el borde es más difícil de implementar que en la nube centralizada.',
@@ -79,7 +79,7 @@ export function FactorsSection() {
         <Card className="shadow-lg">
           <CardHeader>
             <CardTitle className="text-3xl">
-              Patrón Arquitectónico de Edge Computing
+              Patrón Edge Computing
             </CardTitle>
             <CardDescription>
               Un análisis de los factores clave que definen la arquitectura de
