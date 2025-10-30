@@ -1,20 +1,35 @@
 import { Button } from '@/components/ui/button';
 import { ArrowDown } from 'lucide-react';
 import Link from 'next/link';
-import Image from 'next/image';
+
+function Sparkles() {
+  const SPARKLE_COUNT = 50;
+  return (
+    <div className="sparkles">
+      {Array.from({ length: SPARKLE_COUNT }).map((_, i) => {
+        const style = {
+          left: `${Math.random() * 100}%`,
+          top: `${Math.random() * 100}%`,
+          animationDelay: `${Math.random() * 2}s`,
+        };
+        const sizeClass = `s${Math.ceil(Math.random() * 4)}`;
+        return (
+          <div
+            key={i}
+            className={`sparkle ${sizeClass}`}
+            style={style}
+          />
+        );
+      })}
+    </div>
+  );
+}
 
 export function HeroSection() {
   return (
-    <section className="relative w-full h-[60vh] min-h-[400px] flex items-center justify-center text-center text-white">
-      <Image
-        src="https://www.fortiss.org/fileadmin/_processed_/c/3/csm_2021_12_22_Edge_Computing_Whitepaper_83f480a817.png"
-        alt="Edge Computing"
-        fill
-        className="object-cover"
-        priority
-      />
-      <div className="absolute inset-0 bg-black/20" />
-      <div className="relative container mx-auto px-4 md:px-6">
+    <section className="relative w-full h-[60vh] min-h-[400px] flex items-center justify-center text-center bg-background overflow-hidden">
+      <Sparkles />
+      <div className="relative container mx-auto px-4 md:px-6 z-10">
         <div className="flex flex-col items-center space-y-4">
           <div className="space-y-2">
             <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl/none text-white">
