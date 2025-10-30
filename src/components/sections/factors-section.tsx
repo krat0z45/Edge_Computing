@@ -16,39 +16,39 @@ import {
 
 const edgeArchitecturePattern = [
   {
-    factor: 'Connectors',
+    factor: 'Conectores',
     description:
-      'Communication protocols like MQTT, CoAP, and HTTP/S that enable data flow between devices, edge servers, and the cloud.',
+      'Protocolos de comunicación como MQTT, CoAP y HTTP/S que permiten el flujo de datos entre dispositivos, servidores de borde y la nube.',
   },
   {
-    factor: 'Data Elements',
+    factor: 'Elementos de Datos',
     description:
-      'Raw data from sensors, video feeds, user interactions, and processed information that flows through the tiers of the architecture.',
+      'Datos crudos de sensores, transmisiones de video, interacciones de usuario e información procesada que fluye a través de los niveles de la arquitectura.',
   },
   {
-    factor: 'Configuration',
+    factor: 'Configuración',
     description:
-      'A tiered arrangement of components: IoT/user devices, local edge nodes (gateways), regional edge servers, and the central cloud.',
+      'Una disposición por niveles de componentes: dispositivos de IoT/usuario, nodos de borde locales (gateways), servidores de borde regionales y la nube central.',
   },
   {
-    factor: 'Constraints',
+    factor: 'Restricciones',
     description:
-      'Limited computational power and storage on edge devices; potential for intermittent network connectivity.',
+      'Potencia computacional y almacenamiento limitados en dispositivos de borde; potencial de conectividad de red intermitente.',
   },
   {
-    factor: 'Qualities',
+    factor: 'Cualidades',
     description:
-      'Low latency, reduced bandwidth consumption, improved data privacy and security, increased reliability, and scalability.',
+      'Baja latencia, consumo reducido de ancho de banda, mejora de la privacidad y seguridad de los datos, mayor fiabilidad y escalabilidad.',
   },
   {
-    factor: 'Typical Uses',
+    factor: 'Usos Típicos',
     description:
-      'Autonomous vehicles, real-time industrial monitoring (IIoT), smart cities, content delivery networks (CDNs), and interactive retail experiences.',
+      'Vehículos autónomos, monitoreo industrial en tiempo real (IIoT), ciudades inteligentes, redes de entrega de contenido (CDNs) y experiencias de venta minorista interactivas.',
   },
   {
-    factor: 'Cautions',
+    factor: 'Precauciones',
     description:
-      'Increased complexity in deployment and management; challenges in securing a large number of distributed devices and ensuring data consistency.',
+      'Mayor complejidad en la implementación y gestión; desafíos para asegurar un gran número de dispositivos distribuidos y garantizar la consistencia de los datos.',
   },
 ];
 
@@ -59,11 +59,11 @@ export function FactorsSection() {
         <Card className="shadow-lg">
           <CardHeader>
             <CardTitle className="text-3xl">
-              Edge Computing Architectural Pattern
+              Patrón Arquitectónico de Edge Computing
             </CardTitle>
             <CardDescription>
-              An analysis of the key factors defining the Edge Computing
-              architecture.
+              Un análisis de los factores clave que definen la arquitectura de
+              Edge Computing.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -71,8 +71,8 @@ export function FactorsSection() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[150px]">Component</TableHead>
-                    <TableHead>Description</TableHead>
+                    <TableHead className="w-[150px]">Componente</TableHead>
+                    <TableHead>Descripción</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>

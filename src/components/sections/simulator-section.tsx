@@ -8,55 +8,55 @@ import {
 import { CodeBlock } from '@/components/code-block';
 
 const simulatorCode = `
-// 1. Edge Device (e.g., a security camera)
-class EdgeDevice {
-  processFrame(frame) {
-    // Perform object detection locally on the device
-    const objects = this.detectObjects(frame);
+// 1. Dispositivo de Borde (p. ej., una cámara de seguridad)
+class DispositivoBorde {
+  procesarFrame(frame) {
+    // Realiza detección de objetos localmente en el dispositivo
+    const objetos = this.detectarObjetos(frame);
     
-    // If a person is detected, send high-priority alert to gateway
-    if (objects.includes('person')) {
-      const alert = { type: 'PERSON_DETECTED', timestamp: Date.now() };
-      this.sendToGateway(alert, { priority: 'high' });
+    // Si se detecta una persona, envía una alerta de alta prioridad a la pasarela
+    if (objetos.includes('persona')) {
+      const alerta = { tipo: 'PERSONA_DETECTADA', timestamp: Date.now() };
+      this.enviarAPasarela(alerta, { prioridad: 'alta' });
     }
   }
 }
 
-// 2. Edge Gateway (e.g., local server in the building)
-class EdgeGateway {
+// 2. Pasarela de Borde (p. ej., servidor local en el edificio)
+class PasarelaBorde {
   constructor() {
-    this.deviceDataBuffer = [];
+    this.bufferDatosDispositivo = [];
   }
 
-  receiveData(data) {
-    if (data.priority === 'high') {
-      // Immediately forward critical alerts to the cloud
-      this.sendToCloud(data);
+  recibirDatos(datos) {
+    if (datos.prioridad === 'alta') {
+      // Reenvía inmediatamente las alertas críticas a la nube
+      this.enviarANube(datos);
     } else {
-      // Buffer non-critical data
-      this.deviceDataBuffer.push(data);
+      // Almacena en búfer los datos no críticos
+      this.bufferDatosDispositivo.push(datos);
     }
   }
   
-  // Periodically, aggregate and send batched data
-  processAndForwardBatch() {
-    if (this.deviceDataBuffer.length > 0) {
-      const summary = this.aggregate(this.deviceDataBuffer);
-      this.sendToCloud({ type: 'HOURLY_SUMMARY', payload: summary });
-      this.deviceDataBuffer = []; // Clear buffer
+  // Periódicamente, agrega y envía datos por lotes
+  procesarYReenviarLote() {
+    if (this.bufferDatosDispositivo.length > 0) {
+      const resumen = this.agregar(this.bufferDatosDispositivo);
+      this.enviarANube({ tipo: 'RESUMEN_HORARIO', payload: resumen });
+      this.bufferDatosDispositivo = []; // Limpiar búfer
     }
   }
 }
 
-// 3. Cloud Backend
-class CloudService {
-  handleData(data) {
-    if (data.type === 'PERSON_DETECTED') {
-      // Trigger security notifications, store event
-      this.triggerSecurityAlert(data);
-    } else if (data.type === 'HOURLY_SUMMARY') {
-      // Store aggregated data for long-term analytics
-      this.storeForAnalytics(data.payload);
+// 3. Backend en la Nube
+class ServicioNube {
+  manejarDatos(datos) {
+    if (datos.tipo === 'PERSONA_DETECTADA') {
+      // Activa notificaciones de seguridad, almacena el evento
+      this.activarAlertaSeguridad(datos);
+    } else if (datos.tipo === 'RESUMEN_HORARIO') {
+      // Almacena datos agregados para análisis a largo plazo
+      this.almacenarParaAnaliticas(datos.payload);
     }
   }
 }
@@ -69,20 +69,20 @@ export function SimulatorSection() {
         <Card className="shadow-lg">
           <CardHeader>
             <CardTitle className="text-3xl">
-              Architectural Pattern Simulator
+              Simulador de Patrón Arquitectónico
             </CardTitle>
             <CardDescription>
-              A simulated code example illustrating the "Tiered Edge Network"
-              pattern, where processing is distributed across devices, gateways,
-              and the cloud.
+              Un ejemplo de código simulado que ilustra el patrón "Red de Borde
+              Jerárquica", donde el procesamiento se distribuye entre
+              dispositivos, pasarelas y la nube.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground mb-4">
-              This simulation demonstrates how different tiers handle data. The
-              Edge Device performs initial filtering, the Gateway aggregates
-              data and forwards critical alerts, and the Cloud handles long-term
-              storage and complex actions.
+              Esta simulación demuestra cómo los diferentes niveles manejan los
+              datos. El Dispositivo de Borde realiza un filtrado inicial, la
+              Pasarela agrega datos y reenvía alertas críticas, y la Nube se
+              encarga del almacenamiento a largo plazo y acciones complejas.
             </p>
             <CodeBlock>{simulatorCode}</CodeBlock>
           </CardContent>

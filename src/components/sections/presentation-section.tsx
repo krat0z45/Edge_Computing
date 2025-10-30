@@ -11,52 +11,56 @@ import { BrainCircuit, Cloud, Layers, Rocket, Map } from 'lucide-react';
 const slides = [
   {
     icon: <BrainCircuit className="h-12 w-12 text-primary" />,
-    title: 'What is Edge Computing?',
+    title: '¿Qué es Edge Computing?',
     content:
-      "Edge computing is a distributed computing paradigm that brings computation and data storage closer to the sources of data. This is done to improve response times and save bandwidth. Instead of sending data to a centralized cloud for processing, it's processed locally, 'at the edge' of the network.",
+      'Edge computing es un paradigma de computación distribuida que acerca el cómputo y el almacenamiento de datos a las fuentes de datos. Esto se hace para mejorar los tiempos de respuesta y ahorrar ancho de banda. En lugar de enviar datos a una nube centralizada para su procesamiento, se procesan localmente, "en el borde" de la red.',
   },
   {
     icon: <Layers className="h-12 w-12 text-primary" />,
-    title: 'Architectural Tiers',
+    title: 'Niveles Arquitectónicos',
     content:
-      'A typical edge architecture consists of multiple tiers: 1. **Device Edge**: IoT sensors and devices. 2. **Local Edge**: On-premise gateways or servers. 3. **Regional Edge**: Data centers closer to users than the central cloud. 4. **Cloud**: Centralized storage and large-scale analytics.',
+      'Una arquitectura de borde típica consta de múltiples niveles: 1. **Borde del Dispositivo**: Sensores y dispositivos de IoT. 2. **Borde Local**: Pasarelas o servidores locales. 3. **Borde Regional**: Centros de datos más cercanos a los usuarios que la nube central. 4. **Nube**: Almacenamiento centralizado y análisis a gran escala.',
   },
   {
     icon: <Cloud className="h-12 w-12 text-primary" />,
-    title: 'Edge vs. Cloud',
+    title: 'Edge vs. Nube',
     content:
-      'Cloud computing relies on centralized data centers, ideal for massive data storage and complex, non-urgent processing. Edge computing decentralizes processing, which is essential for low-latency, real-time applications and reducing data transmission costs.',
+      'La computación en la nube se basa en centros de datos centralizados, ideal para almacenamiento masivo de datos y procesamiento complejo no urgente. La computación de borde descentraliza el procesamiento, lo cual es esencial para aplicaciones de baja latencia en tiempo real y para reducir los costos de transmisión de datos.',
   },
   {
     icon: <Rocket className="h-12 w-12 text-primary" />,
-    title: 'Benefits of Edge',
+    title: 'Beneficios del Borde',
     content:
-      'Key advantages include: a) **Speed & Low Latency**: Faster response for real-time needs. b) **Improved Security**: Sensitive data stays local. c) **Cost Savings**: Reduced bandwidth and cloud processing costs. d) **Reliability**: Operates even with poor connectivity.',
+      'Las ventajas clave incluyen: a) **Velocidad y Baja Latencia**: Respuesta más rápida para necesidades en tiempo real. b) **Seguridad Mejorada**: Los datos sensibles permanecen locales. c) **Ahorro de Costos**: Reducción de ancho de banda y costos de procesamiento en la nube. d) **Fiabilidad**: Funciona incluso con conectividad deficiente.',
   },
   {
     icon: <Map className="h-12 w-12 text-primary" />,
-    title: 'Real-World Use Cases',
+    title: 'Casos de Uso en el Mundo Real',
     content:
-      'Edge computing is transforming industries: a) **Smart Manufacturing**: Real-time monitoring of factory equipment. b) **Autonomous Vehicles**: Instant decision-making on the road. c) **Healthcare**: On-site patient data analysis. d) **Retail**: In-store analytics and personalized experiences.',
+      'Edge computing está transformando industrias: a) **Manufactura Inteligente**: Monitoreo en tiempo real de equipos de fábrica. b) **Vehículos Autónomos**: Toma de decisiones instantánea en la carretera. c) **Salud**: Análisis de datos de pacientes en el sitio. d) **Venta Minorista**: Analíticas en tienda y experiencias personalizadas.',
   },
 ];
 
 export function PresentationSection() {
   return (
-    <section id="presentation" className="w-full py-12 md:py-24 lg:py-32 bg-card">
+    <section
+      id="presentation"
+      className="w-full py-12 md:py-24 lg:py-32 bg-card"
+    >
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
           <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-            A Quick Introduction
+            Una Rápida Introducción
           </h2>
           <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-            A 10-minute overview of Edge Computing architecture concepts.
+            Un resumen de 10 minutos sobre los conceptos de la arquitectura de
+            Edge Computing.
           </p>
         </div>
         <Carousel
           className="w-full max-w-4xl mx-auto"
           opts={{ loop: true }}
-          aria-label="Presentation Slides"
+          aria-label="Diapositivas de la Presentación"
         >
           <CarouselContent>
             {slides.map((slide, index) => (

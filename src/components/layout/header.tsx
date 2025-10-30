@@ -8,7 +8,7 @@ export function Header() {
         <Link href="/" className="flex items-center gap-2">
           <Cpu className="h-8 w-8 text-primary" />
           <span className="text-xl font-bold text-foreground">
-            Edge Architect
+            Arquitecto Edge
           </span>
         </Link>
         <nav className="hidden items-center gap-6 text-sm font-medium md:flex">
@@ -16,25 +16,25 @@ export function Header() {
             href="#factors"
             className="text-muted-foreground transition-colors hover:text-foreground"
           >
-            Factors
+            Factores
           </Link>
           <Link
             href="#presentation"
             className="text-muted-foreground transition-colors hover:text-foreground"
           >
-            Presentation
+            Presentación
           </Link>
           <Link
             href="#simulator"
             className="text-muted-foreground transition-colors hover:text-foreground"
           >
-            Simulator
+            Simulador
           </Link>
           <Link
             href="#tool"
             className="text-muted-foreground transition-colors hover:text-foreground"
           >
-            Tool
+            Herramienta
           </Link>
         </nav>
       </div>
