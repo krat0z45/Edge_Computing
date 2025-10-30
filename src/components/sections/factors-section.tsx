@@ -14,37 +14,41 @@ import {
   CardDescription,
 } from '@/components/ui/card';
 
-const etlPattern = [
+const edgeArchitecturePattern = [
   {
     factor: 'Connectors',
-    description: 'Read, Write, Data-flow.',
+    description:
+      'Communication protocols like MQTT, CoAP, and HTTP/S that enable data flow between devices, edge servers, and the cloud.',
   },
   {
     factor: 'Data Elements',
-    description: 'Data flowing in the pipeline.',
+    description:
+      'Raw data from sensors, video feeds, user interactions, and processed information that flows through the tiers of the architecture.',
   },
   {
     factor: 'Configuration',
-    description: 'Components are arranged as a chain.',
+    description:
+      'A tiered arrangement of components: IoT/user devices, local edge nodes (gateways), regional edge servers, and the central cloud.',
   },
   {
     factor: 'Constraints',
     description:
-      'The Read, Write, Data-flow relationship should not be circular. Data flows from left to right in the chain.',
+      'Limited computational power and storage on edge devices; potential for intermittent network connectivity.',
   },
   {
     factor: 'Qualities',
     description:
-      'Promotes modifiability. Promotes reuse. Promotes separation of concerns.',
+      'Low latency, reduced bandwidth consumption, improved data privacy and security, increased reliability, and scalability.',
   },
   {
     factor: 'Typical Uses',
-    description: 'Business intelligence applications.',
+    description:
+      'Autonomous vehicles, real-time industrial monitoring (IIoT), smart cities, content delivery networks (CDNs), and interactive retail experiences.',
   },
   {
     factor: 'Cautions',
     description:
-      'A big challenge during data extraction is how your ETL tool handles structured and unstructured data.',
+      'Increased complexity in deployment and management; challenges in securing a large number of distributed devices and ensuring data consistency.',
   },
 ];
 
@@ -55,11 +59,11 @@ export function FactorsSection() {
         <Card className="shadow-lg">
           <CardHeader>
             <CardTitle className="text-3xl">
-              ETL Architectural Pattern
+              Edge Computing Architectural Pattern
             </CardTitle>
             <CardDescription>
-              An analysis of the ETL (Extract, Transform, Load) architectural
-              pattern.
+              An analysis of the key factors defining the Edge Computing
+              architecture.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -72,7 +76,7 @@ export function FactorsSection() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {etlPattern.map((item) => (
+                  {edgeArchitecturePattern.map((item) => (
                     <TableRow key={item.factor}>
                       <TableCell className="font-medium">
                         {item.factor}
