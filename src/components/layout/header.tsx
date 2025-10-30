@@ -34,7 +34,7 @@ export function Header() {
             href="#tool"
             className="text-muted-foreground transition-colors hover:text-foreground"
           >
-            Herramienta
+            Codigo
           </Link>
         </nav>
       </div>
