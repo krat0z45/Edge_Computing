@@ -3,13 +3,13 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Camera, Server, Cloud, Bot, Milestone } from 'lucide-react';
+import { Thermometer, MotionSensor, Server, Cloud, Bot, Milestone } from 'lucide-react';
 import { ScrollArea } from './ui/scroll-area';
 import { cn } from '@/lib/utils';
 
 type LogEntry = {
   message: string;
-  type: 'info' | 'alert' | 'data' | 'summary';
+  type: 'info' | 'alert' | 'data' | 'summary' | 'action';
   timestamp: string;
 };
 
@@ -19,8 +19,12 @@ const LogIcon = ({ type }: { type: LogEntry['type'] }) => {
       return <Bot className="h-4 w-4 text-destructive" />;
     case 'summary':
       return <Milestone className="h-4 w-4 text-blue-500" />;
+    case 'action':
+      return <Bot className="h-4 w-4 text-green-500" />;
+    case 'data':
+      return <Thermometer className="h-4 w-4 text-muted-foreground" />;
     default:
-      return <Camera className="h-4 w-4 text-muted-foreground" />;
+      return <MotionSensor className="h-4 w-4 text-muted-foreground" />;
   }
 };
 
@@ -28,8 +32,8 @@ export function EdgeSimulator() {
   const [deviceLogs, setDeviceLogs] = useState<LogEntry[]>([]);
   const [gatewayLogs, setGatewayLogs] = useState<LogEntry[]>([]);
   const [cloudLogs, setCloudLogs] = useState<LogEntry[]>([]);
-  const [gatewayBuffer, setGatewayBuffer] = useState<any[]>([]);
   const [isSimulating, setIsSimulating] = useState(false);
+  const [isACOn, setIsACOn] = useState(false);
 
   const addLog = (
     setter: React.Dispatch<React.SetStateAction<LogEntry[]>>,
@@ -37,116 +41,78 @@ export function EdgeSimulator() {
     type: LogEntry['type'] = 'info'
   ) => {
     const timestamp = new Date().toLocaleTimeString();
-    setter((prev) => [{ message, type, timestamp }, ...prev]);
+    setter((prev) => [{ message, type, timestamp }, ...prev].slice(0, 100));
   };
 
-  const simulateDeviceProcessing = (isPerson: boolean) => {
-    const frameData = {
-      type: isPerson ? 'PERSONA_DETECTADA' : 'FRAME_NORMAL',
-      timestamp: Date.now(),
-      data: `frame_${Math.random().toString(36).substring(2, 9)}`,
-    };
+  const simulateDeviceEvent = (type: 'temperature' | 'motion') => {
+    setIsSimulating(true);
+    let eventData;
 
-    addLog(
-      setDeviceLogs,
-      `Frame procesado. ${
-        isPerson ? '¡Persona detectada!' : 'Sin eventos relevantes.'
-      }`,
-      isPerson ? 'alert' : 'info'
-    );
-    return frameData;
+    if (type === 'temperature') {
+      const temp = Math.floor(Math.random() * 15) + 18; // Temp between 18°C and 32°C
+      eventData = { type: 'SENSOR_TEMPERATURA', temperature: temp, timestamp: Date.now() };
+      addLog(setDeviceLogs, `Nueva lectura: ${temp}°C.`, 'data');
+    } else {
+      eventData = { type: 'SENSOR_MOVIMIENTO', timestamp: Date.now() };
+      addLog(setDeviceLogs, '¡Movimiento detectado!', 'alert');
+    }
+    
+    setTimeout(() => {
+      addLog(setGatewayLogs, `Recibiendo datos de ${type === 'temperature' ? 'sensor de temperatura' : 'sensor de movimiento'}...`);
+      simulateGatewayProcessing(eventData);
+    }, 500);
+    
+    setTimeout(() => setIsSimulating(false), 1000);
   };
 
   const simulateGatewayProcessing = (data: any) => {
-    if (data.type === 'PERSONA_DETECTADA') {
-      addLog(
-        setGatewayLogs,
-        'Alerta de alta prioridad recibida. Reenviando a la nube...',
-        'alert'
-      );
-      // Simulate immediate cloud send
+    if (data.type === 'SENSOR_TEMPERATURA') {
+      addLog(setGatewayLogs, `Procesando temperatura: ${data.temperature}°C.`, 'data');
+      if (data.temperature > 28 && !isACOn) {
+        addLog(setGatewayLogs, `Temperatura alta (${data.temperature}°C). ¡Encendiendo aire acondicionado!`, 'action');
+        setIsACOn(true);
+      } else if (data.temperature <= 24 && isACOn) {
+        addLog(setGatewayLogs, `Temperatura agradable (${data.temperature}°C). Apagando aire acondicionado.`, 'action');
+        setIsACOn(false);
+      }
+      // Send to cloud for historical analysis
+      setTimeout(() => simulateCloudProcessing({type: 'REGISTRO_TEMPERATURA', ...data}), 500);
+
+    } else if (data.type === 'SENSOR_MOVIMIENTO') {
+      addLog(setGatewayLogs, 'Alerta de movimiento recibida. Reenviando a la nube...', 'alert');
+      // Simulate immediate cloud send for security alerts
       setTimeout(() => simulateCloudProcessing(data), 500);
-    } else {
-      addLog(
-        setGatewayLogs,
-        `Dato normal recibido (${data.data}). Almacenando en búfer.`,
-        'data'
-      );
-      setGatewayBuffer((prev) => [...prev, data]);
     }
   };
 
   const simulateCloudProcessing = (data: any) => {
-    if (data.type === 'PERSONA_DETECTADA') {
-      addLog(
-        setCloudLogs,
-        `ALERTA RECIBIDA: Persona detectada. Activando protocolo de seguridad.`,
-        'alert'
-      );
-    } else if (data.type === 'RESUMEN_HORARIO') {
-      addLog(
-        setCloudLogs,
-        `Lote de datos recibido con ${data.count} frames para análisis.`,
-        'summary'
-      );
+    if (data.type === 'SENSOR_MOVIMIENTO') {
+      addLog(setCloudLogs, 'ALERTA DE SEGURIDAD: Movimiento detectado en casa. Enviando notificación al usuario.', 'alert');
+    } else if (data.type === 'REGISTRO_TEMPERATURA') {
+      addLog(setCloudLogs, `Registro histórico: Temperatura de ${data.temperature}°C guardada para análisis de patrones.`, 'summary');
     }
-  };
-
-  const handleSendData = (isPerson: boolean) => {
-    setIsSimulating(true);
-    addLog(setDeviceLogs, 'Capturando nuevo frame...');
-    const deviceData = simulateDeviceProcessing(isPerson);
-
-    setTimeout(() => {
-      addLog(setGatewayLogs, `Recibiendo datos de dispositivo...`);
-      simulateGatewayProcessing(deviceData);
-      setIsSimulating(false);
-    }, 500);
-  };
-
-  const handleProcessBuffer = () => {
-    if (gatewayBuffer.length === 0) {
-      addLog(setGatewayLogs, 'Búfer vacío. No hay nada que procesar.', 'info');
-      return;
-    }
-
-    setIsSimulating(true);
-    addLog(
-      setGatewayLogs,
-      `Agregando ${gatewayBuffer.length} frames del búfer para enviar a la nube...`,
-      'summary'
-    );
-    const summaryData = {
-      type: 'RESUMEN_HORARIO',
-      count: gatewayBuffer.length,
-      payload: gatewayBuffer.map((d) => d.data),
-    };
-
-    setTimeout(() => {
-      simulateCloudProcessing(summaryData);
-      setGatewayBuffer([]);
-      addLog(setGatewayLogs, 'Búfer limpiado.', 'info');
-      setIsSimulating(false);
-    }, 500);
   };
 
   const handleReset = () => {
     setDeviceLogs([]);
     setGatewayLogs([]);
     setCloudLogs([]);
-    setGatewayBuffer([]);
     setIsSimulating(false);
+    setIsACOn(false);
   };
 
-  const LogDisplay = ({ title, logs, icon: Icon, bufferCount }: { title: string, logs: LogEntry[], icon: React.ElementType, bufferCount?: number }) => (
+  const LogDisplay = ({ title, logs, icon: Icon, acStatus }: { title: string, logs: LogEntry[], icon: React.ElementType, acStatus?: boolean }) => (
     <Card className="flex-1 min-w-0">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-xl">
           <Icon className="h-6 w-6 text-primary" />
           <span>{title}</span>
-          {bufferCount !== undefined && (
-             <span className="ml-auto text-sm font-normal bg-muted text-muted-foreground rounded-full px-2 py-1">
-              Búfer: {bufferCount}
+          {acStatus !== undefined && (
+             <span className={cn("ml-auto text-sm font-normal rounded-full px-2 py-1", {
+               "bg-blue-100 text-blue-800": acStatus,
+               "bg-muted text-muted-foreground": !acStatus,
+             })}>
+              A/C: {acStatus ? 'ON' : 'OFF'}
             </span>
           )}
         </CardTitle>
@@ -164,8 +130,9 @@ export function EdgeSimulator() {
                     <p className={cn("font-mono text-xs text-muted-foreground", {
                       "text-destructive": log.type === 'alert',
                       "text-blue-500": log.type === 'summary',
+                      "text-green-600": log.type === 'action',
                     })}>{log.timestamp}</p>
-                    <p className={cn({ "font-semibold": log.type === 'alert' })}>{log.message}</p>
+                    <p className={cn({ "font-semibold": log.type === 'alert' || log.type === 'action' })}>{log.message}</p>
                   </div>
                 </div>
               ))}
@@ -181,18 +148,17 @@ export function EdgeSimulator() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-center p-4 border rounded-lg bg-card">
         <div className='lg:col-span-2 space-y-2'>
            <h4 className="font-semibold text-center md:text-left">Controles de Simulación</h4>
-            <p className="text-sm text-muted-foreground text-center md:text-left">Genera eventos para ver cómo responde la arquitectura.</p>
+            <p className="text-sm text-muted-foreground text-center md:text-left">Genera eventos de sensores para ver cómo responde la casa inteligente.</p>
         </div>
         <div className="flex flex-col sm:flex-row lg:flex-col gap-2 w-full lg:col-span-2">
             <div className='flex-1 grid grid-cols-2 gap-2'>
-              <Button onClick={() => handleSendData(false)} disabled={isSimulating} variant="outline">
-                Enviar Frame (Normal)
+              <Button onClick={() => simulateDeviceEvent('temperature')} disabled={isSimulating} variant="outline">
+                <Thermometer className="mr-2 h-4 w-4" />
+                Simular Temperatura
               </Button>
-              <Button onClick={() => handleSendData(true)} disabled={isSimulating} variant="destructive">
-                Enviar Frame (Persona)
-              </Button>
-               <Button onClick={handleProcessBuffer} disabled={isSimulating || gatewayBuffer.length === 0}>
-                Procesar Búfer
+              <Button onClick={() => simulateDeviceEvent('motion')} disabled={isSimulating} variant="destructive">
+                 <MotionSensor className="mr-2 h-4 w-4" />
+                Simular Movimiento
               </Button>
                <Button onClick={handleReset} variant="secondary">
                 Reiniciar
@@ -202,9 +168,9 @@ export function EdgeSimulator() {
       </div>
 
       <div className="flex flex-col lg:flex-row gap-4">
-        <LogDisplay title="Dispositivo Edge" logs={deviceLogs} icon={Camera} />
-        <LogDisplay title="Pasarela Edge" logs={gatewayLogs} icon={Server} bufferCount={gatewayBuffer.length} />
-        <LogDisplay title="Nube Central" logs={cloudLogs} icon={Cloud} />
+        <LogDisplay title="Dispositivos (Sensores)" logs={deviceLogs} icon={Thermometer} />
+        <LogDisplay title="Pasarela (Hub Local)" logs={gatewayLogs} icon={Server} acStatus={isACOn} />
+        <LogDisplay title="Nube (Control Central)" logs={cloudLogs} icon={Cloud} />
       </div>
     </div>
   );
