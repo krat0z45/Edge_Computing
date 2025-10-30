@@ -22,6 +22,7 @@ type PlaySoundOptions = {
   duration?: number;
   speed?: number;
   text?: string;
+  isCruising?: boolean;
 };
 
 
@@ -102,8 +103,9 @@ export function EdgeSimulator() {
         const frequency = minFreq + (currentSpeed / maxSpeed) * (maxFreq - minFreq);
         engineSoundSourceRef.current.frequency.setTargetAtTime(frequency, audioContext.currentTime, 0.1);
 
-        const targetGain = currentSpeed > 0 ? 0.1 : 0;
-        gainNodeRef.current?.gain.setTargetAtTime(targetGain, audioContext.currentTime, 0.2);
+        const baseGain = 0.1;
+        const targetGain = currentSpeed > 0 ? (options.isCruising ? baseGain / 2 : baseGain) : 0;
+        gainNodeRef.current?.gain.setTargetAtTime(targetGain, audioContext.currentTime, 0.5);
 
         return;
     }
@@ -220,6 +222,8 @@ export function EdgeSimulator() {
                 setCarStatus('normal');
                 setIsSimulating(false);
                 addLog(setDeviceLogs, `Velocidad de crucero alcanzada.`, 'info');
+                // Play cruising sound
+                playSound('engine', { speed: 100, isCruising: true });
             }
         );
     }
@@ -256,6 +260,7 @@ export function EdgeSimulator() {
                             () => {
                                 setCarStatus('normal');
                                 setIsSimulating(false);
+                                playSound('engine', { speed: 100, isCruising: true });
                             }
                         );
                     }, 3000);
