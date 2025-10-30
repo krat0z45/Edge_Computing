@@ -13,59 +13,38 @@ import {
   CardTitle,
   CardDescription,
 } from '@/components/ui/card';
-import { Wifi, Zap, ShieldCheck, Database, Expand, Bot } from 'lucide-react';
 
-const factors = [
+const etlPattern = [
   {
-    icon: <Zap className="h-5 w-5 text-accent" />,
-    factor: 'Latency',
-    description: 'The time delay in data communication over a network.',
-    impact:
-      'Edge computing significantly reduces latency by processing data closer to the source, enabling real-time applications.',
-    example: 'Autonomous vehicles requiring millisecond-level decisions.',
+    factor: 'Connectors',
+    description: 'Read, Write, Data-flow.',
   },
   {
-    icon: <Wifi className="h-5 w-5 text-accent" />,
-    factor: 'Bandwidth',
-    description: 'The maximum rate of data transfer across a given path.',
-    impact:
-      'By pre-processing data locally, edge devices reduce the amount of data sent to the cloud, conserving network bandwidth.',
-    example:
-      'Video surveillance systems analyzing footage on-site and only sending alerts.',
+    factor: 'Data Elements',
+    description: 'Data flowing in the pipeline.',
   },
   {
-    icon: <ShieldCheck className="h-5 w-5 text-accent" />,
-    factor: 'Security',
-    description: 'Protection of data from unauthorized access or corruption.',
-    impact:
-      'Data processed at the edge is less exposed to public networks, reducing attack surfaces. However, physical device security becomes critical.',
-    example: "Encrypting sensitive patient data on a hospital's local edge server.",
+    factor: 'Configuration',
+    description: 'Components are arranged as a chain.',
   },
   {
-    icon: <Database className="h-5 w-5 text-accent" />,
-    factor: 'Data Privacy',
-    description: 'Handling of sensitive data in compliance with regulations.',
-    impact:
-      'Keeps sensitive or personal data within local jurisdiction, helping to comply with laws like GDPR.',
-    example: 'Processing user data within a specific country or region.',
-  },
-  {
-    icon: <Expand className="h-5 w-5 text-accent" />,
-    factor: 'Scalability',
-    description: "The system's ability to handle a growing amount of work.",
-    impact:
-      'Edge architectures can scale horizontally by adding more edge nodes, distributing the load without overwhelming a central server.',
-    example: 'A smart city adding new IoT sensors without performance degradation.',
-  },
-  {
-    icon: <Bot className="h-5 w-5 text-accent" />,
-    factor: 'Autonomy',
+    factor: 'Constraints',
     description:
-      'The ability of a system to operate without constant connectivity.',
-    impact:
-      'Edge devices can operate reliably even with intermittent or no cloud connection, ensuring continuous operation.',
-    example:
-      'A remote industrial site that continues to function during a network outage.',
+      'The Read, Write, Data-flow relationship should not be circular. Data flows from left to right in the chain.',
+  },
+  {
+    factor: 'Qualities',
+    description:
+      'Promotes modifiability. Promotes reuse. Promotes separation of concerns.',
+  },
+  {
+    factor: 'Typical Uses',
+    description: 'Business intelligence applications.',
+  },
+  {
+    factor: 'Cautions',
+    description:
+      'A big challenge during data extraction is how your ETL tool handles structured and unstructured data.',
   },
 ];
 
@@ -75,10 +54,12 @@ export function FactorsSection() {
       <div className="container mx-auto px-4 md:px-6">
         <Card className="shadow-lg">
           <CardHeader>
-            <CardTitle className="text-3xl">Key Architectural Factors</CardTitle>
+            <CardTitle className="text-3xl">
+              ETL Architectural Pattern
+            </CardTitle>
             <CardDescription>
-              An analysis of crucial factors in Edge Computing architecture,
-              similar to an ETL process evaluation.
+              An analysis of the ETL (Extract, Transform, Load) architectural
+              pattern.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -86,24 +67,17 @@ export function FactorsSection() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[150px]">Factor</TableHead>
+                    <TableHead className="w-[150px]">Component</TableHead>
                     <TableHead>Description</TableHead>
-                    <TableHead>Impact on Edge</TableHead>
-                    <TableHead>Example</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {factors.map((item) => (
+                  {etlPattern.map((item) => (
                     <TableRow key={item.factor}>
                       <TableCell className="font-medium">
-                        <div className="flex items-center gap-3">
-                          {item.icon}
-                          {item.factor}
-                        </div>
+                        {item.factor}
                       </TableCell>
                       <TableCell>{item.description}</TableCell>
-                      <TableCell>{item.impact}</TableCell>
-                      <TableCell>{item.example}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
