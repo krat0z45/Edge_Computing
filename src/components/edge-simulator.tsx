@@ -3,10 +3,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Bot, Cloud, Milestone, Server, Siren, Car, AlertTriangle, Zap, Power } from 'lucide-react';
+import { Bot, Cloud, Milestone, Server, Siren, Car, AlertTriangle, Zap, Power, RefreshCw } from 'lucide-react';
 import { ScrollArea } from './ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { SmartCarMockup } from './smart-car-mockup';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 
 type LogEntry = {
   message: string;
@@ -374,33 +375,56 @@ export function EdgeSimulator() {
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-center p-4 border rounded-lg bg-card/80">
-        <div className='lg:col-span-2 space-y-2'>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center p-4 border rounded-lg bg-card/80">
+        <div className='md:col-span-2 space-y-2'>
            <h4 className="font-semibold text-center md:text-left">Controles de Simulación</h4>
             <p className="text-sm text-muted-foreground text-center md:text-left">Genera eventos de sensores para ver cómo responde el sistema del coche autónomo.</p>
         </div>
-        <div className="flex flex-col sm:flex-row lg:flex-col gap-2 w-full lg:col-span-2">
-            <div className='flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2'>
-               <Button onClick={() => playSound('engineStart', { duration: 0.7 })} disabled={isSimulating}>
-                <Power className="mr-2 h-4 w-4" />
-                Encender Motor
-              </Button>
-              <Button onClick={() => simulateDeviceEvent('normal')} disabled={isSimulating}>
-                <Car className="mr-2 h-4 w-4" />
-                Conducción Normal
-              </Button>
-              <Button onClick={() => simulateDeviceEvent('obstacle')} disabled={isSimulating} variant="secondary">
-                 <Siren className="mr-2 h-4 w-4" />
-                Simular Obstáculo
-              </Button>
-               <Button onClick={() => simulateDeviceEvent('failure')} disabled={isSimulating} variant="destructive">
-                 <Zap className="mr-2 h-4 w-4" />
-                Falla del Acelerador
-              </Button>
-            </div>
-             <Button onClick={handleReset} variant="ghost" className='w-full sm:w-auto lg:w-full mt-2 lg:mt-0'>
-                Reiniciar Simulación
-            </Button>
+        <div className="flex justify-center items-center gap-2">
+            <TooltipProvider>
+              <div className='flex-1 grid grid-cols-4 gap-2 max-w-sm'>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button onClick={() => simulateDeviceEvent('normal')} disabled={isSimulating} size="lg" className="aspect-square">
+                        <Car />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Conducción Normal</p>
+                    </TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button onClick={() => simulateDeviceEvent('obstacle')} disabled={isSimulating} variant="secondary" size="lg" className="aspect-square">
+                        <Siren />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Simular Obstáculo</p>
+                    </TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button onClick={() => simulateDeviceEvent('failure')} disabled={isSimulating} variant="destructive" size="lg" className="aspect-square">
+                        <Zap />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Simular Falla del Acelerador</p>
+                    </TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                       <Button onClick={handleReset} variant="ghost" size="lg" className="aspect-square">
+                        <RefreshCw />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Reiniciar Simulación</p>
+                    </TooltipContent>
+                  </Tooltip>
+              </div>
+            </TooltipProvider>
         </div>
       </div>
       
