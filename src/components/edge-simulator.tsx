@@ -104,7 +104,7 @@ export function EdgeSimulator() {
         engineSoundSourceRef.current.frequency.setTargetAtTime(frequency, audioContext.currentTime, 0.1);
 
         const baseGain = 0.1;
-        const targetGain = currentSpeed > 0 ? (options.isCruising ? baseGain / 2 : baseGain) : 0;
+        const targetGain = currentSpeed > 0 ? (options.isCruising ? baseGain / 5 : baseGain) : 0;
         gainNodeRef.current?.gain.setTargetAtTime(targetGain, audioContext.currentTime, 0.5);
 
         return;
