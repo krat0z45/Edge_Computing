@@ -183,7 +183,7 @@ export function EdgeSimulator() {
               <CardContent>
                 <div className="flex flex-col xl:flex-row gap-4">
                   <div className="w-full xl:w-1/2">
-                     <HouseMockup isACOn={isACOn} motionDetected={motionDetected} />
+                     <HouseMockup isACOn={isACOn} motionDetected={motionDetected} temperature={currentTemp} />
                   </div>
                   <div className="w-full xl:w-1/2">
                     <ScrollArea className="h-64 w-full pr-4">
