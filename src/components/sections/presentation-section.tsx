@@ -68,8 +68,8 @@ export function PresentationSection() {
               <CarouselItem key={index}>
                 <div className="p-1">
                   <Card className="shadow-md overflow-hidden">
-                    <CardContent className="flex flex-col md:flex-row items-center justify-center p-0 min-h-[450px]">
-                      <div className="relative w-full h-48 md:h-full md:w-1/2">
+                    <CardContent className="flex flex-col items-center justify-start p-0">
+                      <div className="relative w-full h-64">
                         {slide.image && (
                           <Image
                             src={slide.image.imageUrl}
@@ -80,11 +80,11 @@ export function PresentationSection() {
                           />
                         )}
                       </div>
-                      <div className="flex flex-col space-y-4 p-8 md:p-12 md:w-1/2">
-                        <h3 className="text-2xl font-bold text-primary">
+                      <div className="flex flex-col space-y-4 p-8 w-full">
+                        <h3 className="text-2xl font-bold text-primary text-left">
                           {slide.title}
                         </h3>
-                        <p className="text-muted-foreground">
+                        <p className="text-muted-foreground text-left">
                           {slide.content}
                         </p>
                       </div>
