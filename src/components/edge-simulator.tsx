@@ -3,10 +3,10 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Bot, Cloud, Milestone, Server, Siren, Waves, Thermometer, AlertTriangle } from 'lucide-react';
+import { Bot, Cloud, Milestone, Server, Siren, Waves, AlertTriangle, Package } from 'lucide-react';
 import { ScrollArea } from './ui/scroll-area';
 import { cn } from '@/lib/utils';
-import { RobotArmMockup } from './robot-arm-mockup';
+import { ConveyorBeltMockup } from './conveyor-belt-mockup';
 
 type LogEntry = {
   message: string;
@@ -14,7 +14,7 @@ type LogEntry = {
   timestamp: string;
 };
 
-type RobotStatus = 'normal' | 'warning' | 'error';
+type ConveyorStatus = 'normal' | 'warning' | 'error';
 
 const LogIcon = ({ type }: { type: LogEntry['type'] }) => {
   switch (type) {
@@ -27,7 +27,7 @@ const LogIcon = ({ type }: { type: LogEntry['type'] }) => {
     case 'action':
       return <Bot className="h-4 w-4 text-green-500" />;
     case 'data':
-      return <Waves className="h-4 w-4 text-muted-foreground" />;
+      return <Package className="h-4 w-4 text-muted-foreground" />;
     default:
       return <Bot className="h-4 w-4 text-muted-foreground" />;
   }
@@ -38,8 +38,8 @@ export function EdgeSimulator() {
   const [gatewayLogs, setGatewayLogs] = useState<LogEntry[]>([]);
   const [cloudLogs, setCloudLogs] = useState<LogEntry[]>([]);
   const [isSimulating, setIsSimulating] = useState(false);
-  const [robotStatus, setRobotStatus] = useState<RobotStatus>('normal');
-  const [simulationData, setSimulationData] = useState({ vibration: 5, temp: 45, errors: 0 });
+  const [conveyorStatus, setConveyorStatus] = useState<ConveyorStatus>('normal');
+  const [simulationData, setSimulationData] = useState({ speed: 1.2, weight: 15, errors: 0 });
 
   const addLog = (
     setter: React.Dispatch<React.SetStateAction<LogEntry[]>>,
@@ -50,74 +50,74 @@ export function EdgeSimulator() {
     setter((prev) => [{ message, type, timestamp }, ...prev].slice(0, 100));
   };
 
-  const simulateDeviceEvent = (type: 'normal' | 'vibration' | 'error') => {
+  const simulateDeviceEvent = (type: 'normal' | 'anomaly' | 'error') => {
     setIsSimulating(true);
     let eventData: any;
-    let localStatus: RobotStatus = 'normal';
+    let localStatus: ConveyorStatus = 'normal';
 
     if (type === 'normal') {
-      const vibration = Math.floor(Math.random() * 5) + 3; // 3-7 Hz
-      const temp = Math.floor(Math.random() * 10) + 40; // 40-49°C
-      eventData = { type: 'SENSOR_DATA', vibration, temp, errors: 0, timestamp: Date.now() };
-      setSimulationData({ vibration, temp, errors: 0 });
-      addLog(setDeviceLogs, `Datos normales: ${vibration} Hz, ${temp}°C`, 'data');
-    } else if (type === 'vibration') {
-      const vibration = Math.floor(Math.random() * 8) + 15; // 15-22 Hz
-      const temp = Math.floor(Math.random() * 15) + 65; // 65-79°C
-      eventData = { type: 'SENSOR_DATA', vibration, temp, errors: 0, timestamp: Date.now() };
-      setSimulationData({ vibration, temp, errors: 0 });
+      const speed = parseFloat((Math.random() * 0.2 + 1.1).toFixed(2)); // 1.1 - 1.3 m/s
+      const weight = Math.floor(Math.random() * 5) + 12; // 12-16 kg
+      eventData = { type: 'BELT_DATA', speed, weight, timestamp: Date.now() };
+      setSimulationData(prev => ({ ...prev, speed, weight }));
+      addLog(setDeviceLogs, `Datos normales: Velocidad ${speed} m/s, Peso ${weight} kg`, 'data');
+    } else if (type === 'anomaly') {
+      const speed = parseFloat((Math.random() * 0.5 + 1.5).toFixed(2)); // 1.5 - 2.0 m/s
+      eventData = { type: 'BELT_DATA', speed, weight: simulationData.weight, timestamp: Date.now() };
+      setSimulationData(prev => ({...prev, speed }));
       localStatus = 'warning';
-      addLog(setDeviceLogs, `¡Anomalía detectada!: Vibración ${vibration} Hz, Temp ${temp}°C`, 'warning');
+      addLog(setDeviceLogs, `¡Anomalía detectada!: Velocidad irregular de ${speed} m/s`, 'warning');
     } else { // error
-      const errors = Math.floor(Math.random() * 3) + 1;
-      eventData = { type: 'PRODUCTION_ERROR', errors, partId: `P-${Math.floor(Math.random()*1000)}`, timestamp: Date.now() };
-      setSimulationData(prev => ({ ...prev, errors: prev.errors + errors}));
+      const packageId = `PKG-${Math.floor(Math.random()*1000)}`;
+      eventData = { type: 'OBSTRUCTION_ERROR', error: 'Paquete caído', packageId, timestamp: Date.now() };
+      setSimulationData(prev => ({ ...prev, errors: prev.errors + 1}));
       localStatus = 'error';
-      addLog(setDeviceLogs, `¡Fallo de ensamblaje! ${errors} error(es) en pieza.`, 'alert');
+      addLog(setDeviceLogs, `¡Fallo del sistema! Paquete ${packageId} obstruyendo la línea.`, 'alert');
     }
     
-    setRobotStatus(localStatus);
+    setConveyorStatus(localStatus);
     
     setTimeout(() => {
-      addLog(setGatewayLogs, `Recibiendo datos de sensores del brazo robótico...`);
+      addLog(setGatewayLogs, `Recibiendo datos de la banda transportadora...`);
       simulateGatewayProcessing(eventData, localStatus);
     }, 500);
     
+    // Duration of simulation effect
+    const simulationDuration = type === 'error' ? 3000 : 1500;
     setTimeout(() => {
         setIsSimulating(false);
-        // Reset status visually after a moment if not a persistent error
-        if(localStatus !== 'error') setTimeout(()=> setRobotStatus('normal'), 1500)
-    }, 1000);
+        if(localStatus !== 'error') {
+            setTimeout(()=> setConveyorStatus('normal'), 1000);
+        }
+    }, simulationDuration);
   };
 
-  const simulateGatewayProcessing = (data: any, status: RobotStatus) => {
-    if (data.type === 'SENSOR_DATA') {
-      addLog(setGatewayLogs, `Procesando: ${data.vibration} Hz, ${data.temp}°C.`, 'data');
+  const simulateGatewayProcessing = (data: any, status: ConveyorStatus) => {
+    if (data.type === 'BELT_DATA') {
+      addLog(setGatewayLogs, `Procesando: ${data.speed} m/s.`, 'data');
       if (status === 'warning') {
-        addLog(setGatewayLogs, `ADVERTENCIA: Vibración/Temperatura fuera de rango. Notificando a la nube y programando mantenimiento.`, 'warning');
-        setTimeout(() => simulateCloudProcessing({type: 'MAINTENANCE_ALERT', reason: `High vibration (${data.vibration} Hz) and temp (${data.temp}°C)`}), 500);
+        addLog(setGatewayLogs, `ADVERTENCIA: Velocidad fuera de rango. Ajustando motor y notificando a la nube.`, 'warning');
+        setTimeout(() => simulateCloudProcessing({type: 'PERFORMANCE_ALERT', reason: `High speed detected (${data.speed} m/s)`}), 500);
       } else {
          addLog(setGatewayLogs, `Parámetros operativos normales.`, 'info');
       }
-      // Send aggregated data to cloud periodically
-      if(Math.random() > 0.5) {
-        setTimeout(() => simulateCloudProcessing({type: 'HOURLY_SUMMARY', avgVibration: data.vibration, avgTemp: data.temp}), 1000);
+      if(Math.random() > 0.7) {
+        setTimeout(() => simulateCloudProcessing({type: 'HOURLY_SUMMARY', avgSpeed: data.speed, packages: Math.floor(Math.random()*100)+500}), 1000);
       }
-    } else if (data.type === 'PRODUCTION_ERROR') {
-      addLog(setGatewayLogs, `ERROR CRÍTICO: ${data.errors} error(es) en pieza ${data.partId}. ¡Deteniendo línea de producción!`, 'action');
-      setRobotStatus('error');
-      // Immediate alert to cloud
+    } else if (data.type === 'OBSTRUCTION_ERROR') {
+      addLog(setGatewayLogs, `ERROR CRÍTICO: ${data.error}. ¡Deteniendo banda transportadora inmediatamente!`, 'action');
+      setConveyorStatus('error');
       setTimeout(() => simulateCloudProcessing(data), 500);
     }
   };
 
   const simulateCloudProcessing = (data: any) => {
-    if (data.type === 'MAINTENANCE_ALERT') {
-      addLog(setCloudLogs, `Alerta de Mantenimiento: ${data.reason}. Orden de trabajo #W0-${Date.now()%1000} creada.`, 'warning');
-    } else if (data.type === 'PRODUCTION_ERROR') {
-      addLog(setCloudLogs, `ERROR DE PRODUCCIÓN: ${data.errors} error(es) en ${data.partId}. Registrado para análisis de causa raíz.`, 'alert');
+    if (data.type === 'PERFORMANCE_ALERT') {
+      addLog(setCloudLogs, `Alerta de Rendimiento: ${data.reason}. Registrado para análisis de eficiencia.`, 'warning');
+    } else if (data.type === 'OBSTRUCTION_ERROR') {
+      addLog(setCloudLogs, `ERROR DE LÍNEA: ${data.error} con paquete ${data.packageId}. Orden de mantenimiento de emergencia #W1-${Date.now()%1000} creada.`, 'alert');
     } else if (data.type === 'HOURLY_SUMMARY') {
-      addLog(setCloudLogs, `Resumen de datos: Promedio de ${data.avgVibration.toFixed(1)} Hz y ${data.avgTemp.toFixed(1)}°C guardado.`, 'summary');
+      addLog(setCloudLogs, `Resumen de Operaciones: ${data.packages} paquetes procesados a una velocidad promedio de ${data.avgSpeed.toFixed(1)} m/s.`, 'summary');
     }
   };
 
@@ -126,8 +126,8 @@ export function EdgeSimulator() {
     setGatewayLogs([]);
     setCloudLogs([]);
     setIsSimulating(false);
-    setRobotStatus('normal');
-    setSimulationData({ vibration: 5, temp: 45, errors: 0 });
+    setConveyorStatus('normal');
+    setSimulationData({ speed: 1.2, weight: 15, errors: 0 });
   };
 
   const LogDisplay = ({ title, logs, icon: Icon }: { title: string, logs: LogEntry[], icon: React.ElementType }) => (
@@ -174,11 +174,11 @@ export function EdgeSimulator() {
         </div>
         <div className="flex flex-col sm:flex-row lg:flex-col gap-2 w-full lg:col-span-2">
             <div className='flex-1 grid grid-cols-1 sm:grid-cols-3 gap-2'>
-              <Button onClick={() => simulateDeviceEvent('normal')} disabled={isSimulating} variant="outline">
+              <Button onClick={() => simulateDeviceEvent('normal')} disabled={isSimulating}>
                 <Waves className="mr-2 h-4 w-4" />
                 Operación Normal
               </Button>
-              <Button onClick={() => simulateDeviceEvent('vibration')} disabled={isSimulating} variant="secondary">
+              <Button onClick={() => simulateDeviceEvent('anomaly')} disabled={isSimulating} variant="secondary">
                  <AlertTriangle className="mr-2 h-4 w-4" />
                 Simular Anomalía
               </Button>
@@ -195,8 +195,8 @@ export function EdgeSimulator() {
       
       <div className="flex flex-col-reverse lg:flex-row gap-4">
         <div className="flex flex-col md:flex-row lg:flex-col gap-4 w-full lg:w-1/3">
-          <LogDisplay title="Dispositivos" logs={deviceLogs} icon={Bot} />
-          <LogDisplay title="Nube" logs={cloudLogs} icon={Cloud} />
+          <LogDisplay title="Sensores del Borde" logs={deviceLogs} icon={Bot} />
+          <LogDisplay title="Nube Central" logs={cloudLogs} icon={Cloud} />
         </div>
         <div className="flex flex-col gap-4 w-full lg:w-2/3">
            <Card className="flex-1 min-w-0 bg-card/80">
@@ -209,7 +209,7 @@ export function EdgeSimulator() {
               <CardContent>
                 <div className="flex flex-col xl:flex-row gap-4">
                   <div className="w-full xl:w-1/2">
-                     <RobotArmMockup status={robotStatus} data={simulationData} />
+                     <ConveyorBeltMockup status={conveyorStatus} data={simulationData} />
                   </div>
                   <div className="w-full xl:w-1/2">
                     <ScrollArea className="h-[280px] w-full pr-4">
@@ -243,3 +243,5 @@ export function EdgeSimulator() {
     </div>
   );
 }
+
+    
