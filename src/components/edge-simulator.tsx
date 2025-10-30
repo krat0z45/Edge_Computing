@@ -16,7 +16,14 @@ type LogEntry = {
 
 type CarStatus = 'normal' | 'braking' | 'accelerating' | 'failure';
 
-type SoundType = 'engine' | 'brake' | 'alert' | 'alarm' | 'powerDown' | 'confirmation';
+type SoundType = 'engine' | 'brake' | 'alert' | 'alarm' | 'powerDown' | 'confirmation' | 'voice';
+
+type PlaySoundOptions = {
+  duration?: number;
+  speed?: number;
+  text?: string;
+};
+
 
 export function EdgeSimulator() {
   const [deviceLogs, setDeviceLogs] = useState<LogEntry[]>([]);
@@ -38,6 +45,7 @@ export function EdgeSimulator() {
       if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
         audioContextRef.current.close();
       }
+      window.speechSynthesis?.cancel();
     };
   }, []);
 
@@ -53,7 +61,21 @@ export function EdgeSimulator() {
     return audioContextRef.current;
   };
   
-  const playSound = (type: SoundType, duration: number = 0.5, speed?: number) => {
+  const playSound = (type: SoundType, options: PlaySoundOptions = {}) => {
+    if (type === 'voice' && options.text) {
+        if ('speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance(options.text);
+            utterance.lang = 'es-ES';
+            utterance.rate = 1.1;
+            utterance.pitch = 0.8;
+            window.speechSynthesis.speak(utterance);
+        } else {
+            console.warn("Web Speech API is not supported in this browser.");
+            playSound('alert', { duration: 1.0 });
+        }
+        return;
+    }
+    
     const audioContext = getAudioContext();
     if (!audioContext) return;
 
@@ -76,7 +98,7 @@ export function EdgeSimulator() {
         const maxSpeed = 150;
         const minFreq = 40;
         const maxFreq = 120;
-        const currentSpeed = speed || 0;
+        const currentSpeed = options.speed || 0;
         const frequency = minFreq + (currentSpeed / maxSpeed) * (maxFreq - minFreq);
         engineSoundSourceRef.current.frequency.setTargetAtTime(frequency, audioContext.currentTime, 0.1);
 
@@ -86,7 +108,7 @@ export function EdgeSimulator() {
         return;
     }
 
-    if (engineSoundSourceRef.current) {
+    if (engineSoundSourceRef.current && type !== 'brake') { // let brake sound overlap with engine
        gainNodeRef.current?.gain.setTargetAtTime(0, audioContext.currentTime, 0.1);
     }
 
@@ -94,6 +116,7 @@ export function EdgeSimulator() {
     const gainNode = audioContext.createGain();
     oscillator.connect(gainNode);
     gainNode.connect(audioContext.destination);
+    const duration = options.duration || 0.5;
 
     switch(type) {
         case 'brake':
@@ -161,18 +184,22 @@ export function EdgeSimulator() {
 
   const simulateProgressiveChange = (start: number, end: number, duration: number, stepCallback: (currentValue: number) => void, finalCallback: () => void) => {
     const change = end - start;
-    const increment = change / (duration / 50);
+    const steps = duration / 50;
+    const increment = change / steps;
     let currentValue = start;
+    let stepCount = 0;
+    
     const simInterval = setInterval(() => {
+      stepCount++;
+      if (stepCount >= steps) {
+        currentValue = end;
+        clearInterval(simInterval);
+        stepCallback(currentValue);
+        finalCallback();
+      } else {
         currentValue += increment;
-        if ((increment > 0 && currentValue >= end) || (increment < 0 && currentValue <= end)) {
-            currentValue = end;
-            clearInterval(simInterval);
-            stepCallback(currentValue);
-            finalCallback();
-        } else {
-            stepCallback(currentValue);
-        }
+        stepCallback(currentValue);
+      }
     }, 50);
   }
 
@@ -186,7 +213,7 @@ export function EdgeSimulator() {
         simulateProgressiveChange(simulationData.speed, 100, 2000, 
             (speed) => {
                 setSimulationData(prev => ({ ...prev, speed }));
-                playSound('engine', 0.1, speed);
+                playSound('engine', { speed });
             },
             () => {
                 setCarStatus('normal');
@@ -198,17 +225,17 @@ export function EdgeSimulator() {
 
     if (type === 'obstacle') {
         addLog(setDeviceLogs, `¡Obstáculo detectado!`, 'alert');
-        playSound('alert', 0.5);
+        playSound('alert', { duration: 0.5 });
         setSimulationData(prev => ({...prev, obstacle: true}));
         
         setTimeout(() => {
              addLog(setGatewayLogs, `Obstáculo confirmado. Iniciando frenado de emergencia.`, 'action');
              setCarStatus('braking');
-             playSound('brake', 1.0);
+             playSound('brake', { duration: 1.0 });
              simulateProgressiveChange(simulationData.speed, 0, 1500,
                 (speed) => {
                    setSimulationData(prev => ({ ...prev, speed }));
-                   playSound('engine', 0.1, speed);
+                   playSound('engine', { speed });
                 },
                 () => {
                     addLog(setGatewayLogs, `Vehículo detenido. Esperando a que el obstáculo se despeje.`, 'info');
@@ -220,7 +247,7 @@ export function EdgeSimulator() {
                          simulateProgressiveChange(0, 100, 2000, 
                             (speed) => {
                                 setSimulationData(prev => ({ ...prev, speed }));
-                                playSound('engine', 0.1, speed);
+                                playSound('engine', { speed });
                             },
                             () => {
                                 setCarStatus('normal');
@@ -235,7 +262,7 @@ export function EdgeSimulator() {
     
     if (type === 'failure') {
         addLog(setDeviceLogs, `¡Falla detectada en el sistema del acelerador!`, 'alert');
-        playSound('alarm', 1.5);
+        playSound('alarm', { duration: 1.5 });
         setSimulationData(prev => ({ ...prev, failure: true }));
         setCarStatus('failure');
         
@@ -244,18 +271,19 @@ export function EdgeSimulator() {
             simulateProgressiveChange(simulationData.speed, 150, 1000, 
             (speed) => {
                 setSimulationData(prev => ({ ...prev, speed }));
-                playSound('engine', 0.1, speed);
+                playSound('engine', { speed });
             },
             () => {
+                playSound('voice', { text: 'Peligro Inminente' });
                 addLog(setGatewayLogs, `¡PELIGRO INMINENTE! Anulando sistema de aceleración AHORA.`, 'action');
                 setSimulationData(prev => ({ ...prev, speed: 160 }));
-                playSound('powerDown', 1.0);
+                playSound('powerDown', { duration: 1.0 });
                 setTimeout(() => {
                     setCarStatus('braking');
                     simulateProgressiveChange(160, 0, 2000,
                     (speed) => {
                         setSimulationData(prev => ({ ...prev, speed }));
-                         playSound('engine', 0.1, speed);
+                         playSound('engine', { speed });
                     },
                     () => {
                         stopEngineSound();
@@ -280,7 +308,8 @@ export function EdgeSimulator() {
     setCarStatus('normal');
     setSimulationData({ speed: 0, obstacle: false, failure: false });
     stopEngineSound();
-    playSound('confirmation', 0.3);
+    window.speechSynthesis?.cancel();
+    playSound('confirmation', { duration: 0.3 });
   };
 
   const LogIcon = ({ type }: { type: LogEntry['type'] }) => {
@@ -403,3 +432,5 @@ export function EdgeSimulator() {
     </div>
   );
 }
+
+    
