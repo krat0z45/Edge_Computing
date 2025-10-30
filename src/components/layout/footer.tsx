@@ -32,7 +32,7 @@ export function Footer() {
     <footer className="w-full border-t bg-background">
       <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
         <p className="text-sm text-muted-foreground">
-          &copy; {new Date().getFullYear()} Edge Computing Architecture.
+          Proyecto creado por alumnos de Ingeniería de Software - UAZ.
         </p>
         <Dialog>
           <DialogTrigger asChild>
