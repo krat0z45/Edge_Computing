@@ -14,10 +14,10 @@ export function SimulatorSection() {
         <Card className="shadow-lg bg-transparent border-none">
           <CardHeader className="px-0">
             <CardTitle className="text-3xl">
-              Simulador Interactivo: Casa Inteligente
+              Simulador: Mantenimiento Predictivo en Industria 4.0
             </CardTitle>
             <CardDescription>
-              Observa cómo una arquitectura Edge gestiona eventos en una casa inteligente. Genera eventos de sensores y mira cómo los datos fluyen y se procesan a través de los diferentes niveles.
+              Observa cómo la arquitectura Edge monitoriza un brazo robótico en una fábrica. Genera eventos de sensores para ver cómo se procesan los datos en el borde para predecir fallos y optimizar la producción.
             </CardDescription>
           </CardHeader>
           <CardContent className="p-0">
