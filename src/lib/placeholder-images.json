@@ -1,3 +1,34 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "presentation-what-is-edge",
+      "description": "Concept art illustrating the network of devices at the edge of the network, connected to a central cloud.",
+      "imageUrl": "https://images.unsplash.com/photo-1738082956233-b8f1803411d3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxuZXR3b3JrJTIwZGF0YXxlbnwwfHx8fDE3NjE4NDM3ODV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "network data"
+    },
+    {
+      "id": "presentation-layers",
+      "description": "A diagram showing the different architectural layers of edge computing, from devices to the cloud.",
+      "imageUrl": "https://images.unsplash.com/photo-1665470855996-7741aaee095a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxhcmNoaXRlY3R1cmUlMjBsYXllcnN8ZW58MHx8fHwxNzYxODQ2NzQ0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "architecture layers"
+    },
+    {
+      "id": "presentation-edge-vs-cloud",
+      "description": "An image visually comparing the centralized cloud model with the decentralized edge computing model.",
+      "imageUrl": "https://images.unsplash.com/photo-1531236765834-47398a151eb6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjbG91ZCUyMGVkZ2V8ZW58MHx8fHwxNzYxODQ2NzQ0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cloud edge"
+    },
+    {
+      "id": "presentation-benefits",
+      "description": "An illustration representing the benefits of edge computing, such as speed and security.",
+      "imageUrl": "https://images.unsplash.com/photo-1682084251604-dea4f6acf47b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxzcGVlZCUyMHNlY3VyaXR5fGVufDB8fHx8MTc2MTg0Njc0NHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "speed security"
+    },
+    {
+      "id": "presentation-use-cases",
+      "description": "A photo of a smart city or an autonomous vehicle, representing a real-world use case for edge computing.",
+      "imageUrl": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxzbWFydCUyMGNpdHl8ZW58MHx8fHwxNzYxNzcyNTU4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "smart city"
+    }
+  ]
 }

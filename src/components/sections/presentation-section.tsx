@@ -6,38 +6,39 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 import { Card, CardContent } from '@/components/ui/card';
-import { BrainCircuit, Cloud, Layers, Rocket, Map } from 'lucide-react';
+import Image from 'next/image';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 const slides = [
   {
-    icon: <BrainCircuit className="h-12 w-12 text-primary" />,
+    image: PlaceHolderImages.find((img) => img.id === 'presentation-what-is-edge'),
     title: '¿Qué es Edge Computing?',
     content:
-      'Edge computing es un paradigma de computación distribuida que acerca el cómputo y el almacenamiento de datos a las fuentes de datos. Esto se hace para mejorar los tiempos de respuesta y ahorrar ancho de banda. En lugar de enviar datos a una nube centralizada para su procesamiento, se procesan localmente, "en el borde" de la red.',
+      'Es un modelo de computación distribuida que acerca el procesamiento y almacenamiento de datos al lugar donde se generan y se necesitan. En lugar de enviar todo a una nube central, las tareas críticas se manejan localmente, "en el borde" de la red, para respuestas más rápidas y eficientes.',
   },
   {
-    icon: <Layers className="h-12 w-12 text-primary" />,
+    image: PlaceHolderImages.find((img) => img.id === 'presentation-layers'),
     title: 'Niveles Arquitectónicos',
     content:
-      'Una arquitectura de borde típica consta de múltiples niveles: 1. **Borde del Dispositivo**: Sensores y dispositivos de IoT. 2. **Borde Local**: Pasarelas o servidores locales. 3. **Borde Regional**: Centros de datos más cercanos a los usuarios que la nube central. 4. **Nube**: Almacenamiento centralizado y análisis a gran escala.',
+      'La arquitectura de borde se organiza en capas: 1. **Borde del Dispositivo**: Sensores y actuadores que capturan datos. 2. **Borde Local**: Pasarelas (gateways) que procesan datos de múltiples dispositivos. 3. **Borde Regional**: Centros de datos más cercanos al usuario que la nube. 4. **Nube Central**: Para análisis a gran escala y almacenamiento a largo plazo.',
   },
   {
-    icon: <Cloud className="h-12 w-12 text-primary" />,
+    image: PlaceHolderImages.find((img) => img.id === 'presentation-edge-vs-cloud'),
     title: 'Edge vs. Nube',
     content:
-      'La computación en la nube se basa en centros de datos centralizados, ideal para almacenamiento masivo de datos y procesamiento complejo no urgente. La computación de borde descentraliza el procesamiento, lo cual es esencial para aplicaciones de baja latencia en tiempo real y para reducir los costos de transmisión de datos.',
+      'La Nube es ideal para procesar grandes volúmenes de datos que no son urgentes. El Borde es crucial para aplicaciones que necesitan respuestas en tiempo real (baja latencia), operar con conexión intermitente y reducir los costos de transmisión de datos a la nube.',
   },
   {
-    icon: <Rocket className="h-12 w-12 text-primary" />,
+    image: PlaceHolderImages.find((img) => img.id === 'presentation-benefits'),
     title: 'Beneficios del Borde',
     content:
-      'Las ventajas clave incluyen: a) **Velocidad y Baja Latencia**: Respuesta más rápida para necesidades en tiempo real. b) **Seguridad Mejorada**: Los datos sensibles permanecen locales. c) **Ahorro de Costos**: Reducción de ancho de banda y costos de procesamiento en la nube. d) **Fiabilidad**: Funciona incluso con conectividad deficiente.',
+      'Las ventajas clave incluyen: a) **Velocidad y Baja Latencia**: Respuestas casi instantáneas. b) **Seguridad y Privacidad**: Los datos sensibles se procesan localmente. c) **Ahorro de Ancho de Banda**: Se envían menos datos a la nube. d) **Fiabilidad**: Las aplicaciones funcionan incluso sin conexión a internet.',
   },
   {
-    icon: <Map className="h-12 w-12 text-primary" />,
+    image: PlaceHolderImages.find((img) => img.id === 'presentation-use-cases'),
     title: 'Casos de Uso en el Mundo Real',
     content:
-      'Edge computing está transformando industrias: a) **Manufactura Inteligente**: Monitoreo en tiempo real de equipos de fábrica. b) **Vehículos Autónomos**: Toma de decisiones instantánea en la carretera. c) **Salud**: Análisis de datos de pacientes en el sitio. d) **Venta Minorista**: Analíticas en tienda y experiencias personalizadas.',
+      'El Edge Computing impulsa la innovación en: a) **Vehículos Autónomos**: Procesan datos de sensores para tomar decisiones en milisegundos. b) **Ciudades Inteligentes**: Gestionan el tráfico y la seguridad en tiempo real. c) **Industria 4.0**: Optimizan la producción con análisis predictivo en la fábrica.',
   },
 ];
 
@@ -53,8 +54,8 @@ export function PresentationSection() {
             Una Rápida Introducción
           </h2>
           <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-            Un resumen de 10 minutos sobre los conceptos de la arquitectura de
-            Edge Computing.
+            Un resumen de los conceptos clave de la arquitectura de Edge
+            Computing.
           </p>
         </div>
         <Carousel
@@ -66,15 +67,27 @@ export function PresentationSection() {
             {slides.map((slide, index) => (
               <CarouselItem key={index}>
                 <div className="p-1">
-                  <Card className="shadow-md">
-                    <CardContent className="flex flex-col items-center justify-center p-8 md:p-12 space-y-4 min-h-[300px]">
-                      {slide.icon}
-                      <h3 className="text-2xl font-bold text-center text-primary">
-                        {slide.title}
-                      </h3>
-                      <p className="text-muted-foreground text-center">
-                        {slide.content}
-                      </p>
+                  <Card className="shadow-md overflow-hidden">
+                    <CardContent className="flex flex-col md:flex-row items-center justify-center p-0 min-h-[450px]">
+                      <div className="relative w-full h-48 md:h-full md:w-1/2">
+                        {slide.image && (
+                          <Image
+                            src={slide.image.imageUrl}
+                            alt={slide.title}
+                            fill
+                            className="object-cover"
+                            data-ai-hint={slide.image.imageHint}
+                          />
+                        )}
+                      </div>
+                      <div className="flex flex-col space-y-4 p-8 md:p-12 md:w-1/2">
+                        <h3 className="text-2xl font-bold text-primary">
+                          {slide.title}
+                        </h3>
+                        <p className="text-muted-foreground">
+                          {slide.content}
+                        </p>
+                      </div>
                     </CardContent>
                   </Card>
                 </div>
