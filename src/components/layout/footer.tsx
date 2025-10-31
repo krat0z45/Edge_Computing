@@ -15,15 +15,15 @@ import { Card, CardContent } from '../ui/card';
 const teamMembers = [
   {
     name: 'Cristian Adrian Esparza Cortes',
-    image: PlaceHolderImages.find((img) => img.id === 'cristian-esparza'),
+    initials: 'CA',
   },
   {
     name: 'Diego Ricardo Esparza Cortes',
-    image: PlaceHolderImages.find((img) => img.id === 'diego-esparza'),
+    initials: 'DR',
   },
   {
     name: 'Gerardo Alejando Carrillo Aguirre',
-    image: PlaceHolderImages.find((img) => img.id === 'gerardo-carrillo'),
+    initials: 'GA',
   },
 ];
 
@@ -77,15 +77,8 @@ export function Footer() {
                     <Card key={member.name} className="bg-card/50">
                       <CardContent className="p-4 flex items-center gap-4">
                         <Avatar className="h-12 w-12">
-                          {member.image && (
-                            <AvatarImage
-                              src={member.image.imageUrl}
-                              alt={member.name}
-                              data-ai-hint={member.image.imageHint}
-                            />
-                          )}
                           <AvatarFallback>
-                            {member.name.substring(0, 2)}
+                            {member.initials}
                           </AvatarFallback>
                         </Avatar>
                         <p className="font-medium text-card-foreground">
