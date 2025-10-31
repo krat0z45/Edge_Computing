@@ -37,6 +37,8 @@
     --sidebar-accent-foreground: 210 40% 98%;
     --sidebar-border: 215 28% 22%;
     --sidebar-ring: 204 90% 50%;
+    --plexus-start-color: 260 100% 70%; /* Purple */
+    --plexus-end-color: 140 100% 60%; /* Green */
   }
   .dark {
     --background: 222 44% 15%;
@@ -71,6 +73,8 @@
     --sidebar-accent-foreground: 210 40% 98%;
     --sidebar-border: 215 28% 22%;
     --sidebar-ring: 204 90% 50%;
+    --plexus-start-color: 260 100% 70%; /* Purple */
+    --plexus-end-color: 140 100% 60%; /* Green */
   }
 }
 
@@ -83,123 +87,5 @@
   }
   section {
     @apply scroll-mt-16;
-  }
-}
-
-/* --- Neural Network Animation --- */
-.neural-network-animation {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.neural-network-animation svg {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(1.2);
-  max-width: 1000px;
-  width: 100%;
-  height: auto;
-  opacity: 0.7;
-}
-
-/* Base styles for paths and nodes */
-.nn-path {
-  stroke-width: 0.5;
-  stroke: hsl(var(--ring) / 0.3);
-  fill: none;
-  stroke-dasharray: 2 4;
-}
-
-.nn-node {
-  stroke-width: 1;
-  stroke: hsl(var(--ring));
-  fill: hsl(var(--background));
-  animation: pulse-node 4s infinite alternate;
-}
-
-.nn-node-core {
-  fill: hsl(var(--ring) / 0.8);
-  stroke: none;
-}
-
-.nn-node-highlight {
-  stroke-width: 1.5;
-  animation: pulse-highlight 3s infinite alternate;
-}
-
-.nn-node-highlight.red {
-  stroke: hsl(0 80% 60%);
-}
-.nn-node-highlight.yellow {
-  stroke: hsl(50 90% 60%);
-}
-
-@keyframes pulse-node {
-  from {
-    stroke-opacity: 0.7;
-    transform: scale(0.95);
-  }
-  to {
-    stroke-opacity: 1;
-    transform: scale(1.05);
-  }
-}
-
-@keyframes pulse-highlight {
-  from {
-    stroke-opacity: 0.5;
-    transform: scale(1);
-    filter: brightness(1);
-  }
-  to {
-    stroke-opacity: 1;
-    transform: scale(1.1);
-    filter: brightness(1.5);
-  }
-}
-
-/* Particle Animation */
-.nn-particle {
-  position: absolute;
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background-color: hsl(var(--ring));
-  box-shadow: 0 0 4px hsl(var(--ring)), 0 0 8px hsl(var(--ring));
-  animation: follow-path 8s linear infinite, fade-particle 8s linear infinite;
-  opacity: 0;
-}
-
-@keyframes follow-path {
-  0% {
-    offset-distance: 0%;
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  90% {
-    opacity: 1;
-  }
-  100% {
-    offset-distance: 100%;
-    opacity: 0;
-  }
-}
-
-@keyframes fade-particle {
-  0%,
-  100% {
-    opacity: 0;
-  }
-  10%,
-  90% {
-    opacity: 1;
   }
 }

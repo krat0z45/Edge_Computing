@@ -1,125 +1,172 @@
+
+'use client';
+
+import React, { useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowDown } from 'lucide-react';
 import Link from 'next/link';
-import React from 'react';
 
-function NeuralNetworkAnimation() {
-  const particlePaths = [
-    'path-1',
-    'path-2',
-    'path-3',
-    'path-4',
-    'path-5',
-    'path-6',
-    'path-7',
-    'path-8',
-  ];
+// Helper function to get CSS variable values
+const getCssVar = (name: string) => {
+  if (typeof window === 'undefined') return '';
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+};
 
-  return (
-    <div className="neural-network-animation absolute top-0 left-0 w-full h-full -z-10 bg-gradient-to-br from-cyan-900/30 via-transparent to-indigo-900/30">
-      <svg
-        viewBox="0 0 400 200"
-        xmlns="http://www.w3.org/2000/svg"
-        preserveAspectRatio="xMidYMid meet"
-      >
-        <defs>
-          <path
-            id="path-1"
-            className="nn-path"
-            d="M 50 100 C 80 50, 120 50, 150 100"
-          />
-          <path
-            id="path-2"
-            className="nn-path"
-            d="M 50 100 C 80 150, 120 150, 150 100"
-          />
-          <path
-            id="path-3"
-            className="nn-path"
-            d="M 150 100 C 180 70, 220 70, 250 100"
-          />
-          <path
-            id="path-4"
-            className="nn-path"
-            d="M 150 100 C 180 130, 220 130, 250 100"
-          />
-          <path
-            id="path-5"
-            className="nn-path"
-            d="M 80 40 C 150 10, 200 10, 280 50"
-          />
-          <path
-            id="path-6"
-            className="nn-path"
-            d="M 80 160 C 150 190, 200 190, 280 150"
-          />
-          <path
-            id="path-7"
-            className="nn-path"
-            d="M 250 100 C 280 20, 320 50, 350 80"
-          />
-          <path
-            id="path-8"
-            className="nn-path"
-            d="M 250 100 C 280 180, 320 150, 350 120"
-          />
-        </defs>
+const PlexusAnimation = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
-        {/* Render paths for particles to follow */}
-        <use href="#path-1" />
-        <use href="#path-2" />
-        <use href="#path-3" />
-        <use href="#path-4" />
-        <use href="#path-5" />
-        <use href="#path-6" />
-        <use href="#path-7" />
-        <use href="#path-8" />
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
-        {/* Main Nodes */}
-        <circle cx="50" cy="100" r="8" className="nn-node" />
-        <circle cx="150" cy="100" r="10" className="nn-node" />
-        <circle cx="250" cy="100" r="10" className="nn-node" />
-        <circle cx="350" cy="80" r="6" className="nn-node" />
-        <circle cx="350" cy="120" r="6" className="nn-node" />
-        <circle cx="80" cy="40" r="7" className="nn-node" />
-        <circle cx="80" cy="160" r="7" className="nn-node" />
-        <circle cx="280" cy="50" r="5" className="nn-node" />
-        <circle cx="280" cy="150" r="5" className="nn-node" />
+    let width = (canvas.width = window.innerWidth);
+    let height = (canvas.height = window.innerHeight);
 
-        {/* Highlighted Nodes */}
-        <g>
-          <circle cx="150" cy="100" r="10" className="nn-node-highlight red" />
-          <circle cx="150" cy="100" r="5" className="nn-node-core" />
-        </g>
-        <g>
-          <circle cx="280" cy="50" r="5" className="nn-node-highlight yellow" />
-          <circle cx="280" cy="50" r="2.5" className="nn-node-core" />
-        </g>
-        <g>
-          <circle cx="80" cy="160" r="7" className="nn-node-highlight red" />
-          <circle cx="80" cy="160" r="3.5" className="nn-node-core" />
-        </g>
-      </svg>
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
 
-      {/* Particles */}
-      {particlePaths.map((pathId, i) => (
-        <div
-          key={i}
-          className="nn-particle"
-          style={{
-            offsetPath: `path(getComputedStyle(document.getElementById('${pathId}')).getPropertyValue('d'))`,
-            animationDelay: `${i * 1}s`,
-          }}
-        />
-      ))}
-    </div>
-  );
-}
+    const particles: Particle[] = [];
+    const particleCount = width > 768 ? 150 : 75;
+    const maxDistance = 120;
+    
+    // Get HSL values from CSS variables
+    const startColorStr = getCssVar('--plexus-start-color');
+    const endColorStr = getCssVar('--plexus-end-color');
+    
+    const [startH, startS, startL] = startColorStr.split(' ').map(parseFloat);
+    const [endH, endS, endL] = endColorStr.split(' ').map(parseFloat);
+
+    const mouse = {
+      x: -1000,
+      y: -1000,
+      radius: 150,
+    };
+
+    const handleMouseMove = (event: MouseEvent) => {
+      mouse.x = event.clientX;
+      mouse.y = event.clientY;
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+
+    class Particle {
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      size: number;
+      baseColor: string = '';
+      
+      constructor() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.vx = Math.random() * 1 - 0.5;
+        this.vy = Math.random() * 1 - 0.5;
+        this.size = Math.random() * 1.5 + 1;
+        this.updateColor();
+      }
+
+      updateColor() {
+          const ratio = this.x / width;
+          const h = startH + (endH - startH) * ratio;
+          const s = startS + (endS - startS) * ratio;
+          const l = startL + (endL - startL) * ratio;
+          this.baseColor = `hsl(${h}, ${s}%, ${l}%)`;
+      }
+
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+
+        if (this.x < 0 || this.x > width) this.vx *= -1;
+        if (this.y < 0 || this.y > height) this.vy *= -1;
+        
+        this.updateColor();
+      }
+
+      draw() {
+        ctx!.fillStyle = this.baseColor;
+        ctx!.beginPath();
+        ctx!.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx!.fill();
+      }
+    }
+
+    const init = () => {
+      for (let i = 0; i < particleCount; i++) {
+        particles.push(new Particle());
+      }
+    };
+
+    const connect = () => {
+        for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+                const dx = particles[i].x - particles[j].x;
+                const dy = particles[i].y - particles[j].y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < maxDistance) {
+                    const opacity = 1 - distance / maxDistance;
+                    const avgX = (particles[i].x + particles[j].x) / 2;
+                    const ratio = avgX / width;
+                    const h = startH + (endH - startH) * ratio;
+                    const s = startS + (endS - startS) * ratio;
+                    const l = startL + (endL - startL) * ratio;
+                    
+                    ctx!.strokeStyle = `hsla(${h}, ${s}%, ${l}%, ${opacity})`;
+                    ctx!.lineWidth = 0.5;
+                    ctx!.beginPath();
+                    ctx!.moveTo(particles[i].x, particles[i].y);
+                    ctx!.lineTo(particles[j].x, particles[j].y);
+                    ctx!.stroke();
+                }
+            }
+             const dxMouse = particles[i].x - mouse.x;
+             const dyMouse = particles[i].y - mouse.y;
+             const distMouse = Math.sqrt(dxMouse*dxMouse + dyMouse*dyMouse);
+             if (distMouse < mouse.radius) {
+                 const opacity = 1 - distMouse / mouse.radius;
+                 ctx!.strokeStyle = `hsla(${startH}, ${startS}%, ${startL}%, ${opacity})`;
+                 ctx!.lineWidth = 0.2;
+                 ctx!.beginPath();
+                 ctx!.moveTo(particles[i].x, particles[i].y);
+                 ctx!.lineTo(mouse.x, mouse.y);
+                 ctx!.stroke();
+             }
+        }
+    };
+
+    let animationFrameId: number;
+    const animate = () => {
+      ctx!.clearRect(0, 0, width, height);
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      connect();
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    init();
+    animate();
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full -z-10" />;
+};
+
 
 export function HeroSection() {
   return (
     <section className="relative w-full h-[60vh] min-h-[400px] flex items-center justify-center text-center bg-transparent overflow-hidden">
-      <NeuralNetworkAnimation />
+      <PlexusAnimation />
       <div className="container mx-auto px-4 md:px-6 z-10">
         <div className="flex flex-col items-center space-y-4">
           <div className="space-y-2">
