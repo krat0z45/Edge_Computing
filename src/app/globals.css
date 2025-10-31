@@ -86,8 +86,9 @@
   }
 }
 
-/* --- Arquitectura Nodes Animation --- */
-.architecture-nodes {
+
+/* --- Neural Network Animation --- */
+.neural-network-animation {
   position: absolute;
   top: 0;
   left: 0;
@@ -97,98 +98,124 @@
   pointer-events: none;
 }
 
-.node {
+.neural-network-animation svg {
   position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1.2);
+  max-width: 1000px;
+  width: 100%;
+  height: auto;
+  opacity: 0.7;
+}
+
+/* Base styles for paths and nodes */
+.nn-path {
+  stroke-width: 0.5;
+  stroke: hsl(var(--ring) / 0.3);
+  fill: none;
+}
+
+.nn-node {
+  stroke-width: 1;
+  stroke: hsl(var(--ring));
+  fill: hsl(var(--background));
+  animation: pulse-node 4s infinite alternate;
+}
+
+.nn-node-core {
+  fill: hsl(var(--ring) / 0.8);
+  stroke: none;
+}
+
+.nn-node-highlight {
+  stroke-width: 1.5;
+  animation: pulse-highlight 3s infinite alternate;
+}
+
+.nn-node-highlight.red {
+  stroke: hsl(0 80% 60%);
+}
+.nn-node-highlight.yellow {
+  stroke: hsl(50 90% 60%);
+}
+
+@keyframes pulse-node {
+  from {
+    stroke-opacity: 0.7;
+    transform: scale(0.95);
+  }
+  to {
+    stroke-opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes pulse-highlight {
+  from {
+    stroke-opacity: 0.5;
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  to {
+    stroke-opacity: 1;
+    transform: scale(1.1);
+    filter: brightness(1.5);
+  }
+}
+
+/* Particle Animation */
+.nn-particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
   border-radius: 50%;
-  background-color: hsl(var(--ring) / 0.5);
-  box-shadow: 0 0 8px hsl(var(--ring)), 0 0 16px hsl(var(--ring) / 0.5);
-  animation: move-node linear infinite, pulse-node 3s infinite alternate;
+  background-color: hsl(var(--ring));
+  box-shadow: 0 0 4px hsl(var(--ring)), 0 0 8px hsl(var(--ring));
+  animation: follow-path 8s linear infinite, fade-particle 8s linear infinite;
+  opacity: 0;
 }
 
-.node.n1 {
-  width: 10px;
-  height: 10px;
-  animation-duration: 25s, 3s;
-}
-.node.n2 {
-  width: 15px;
-  height: 15px;
-  animation-duration: 30s, 3.5s;
-  animation-delay: -2s;
-}
-.node.n3 {
-  width: 8px;
-  height: 8px;
-  animation-duration: 35s, 2.8s;
-  animation-delay: -5s;
-}
-.node.n4 {
-  width: 12px;
-  height: 12px;
-  animation-duration: 40s, 3.2s;
-  animation-delay: -10s;
-}
-.node.n5 {
-  width: 18px;
-  height: 18px;
-  animation-duration: 28s, 4s;
-  animation-delay: -7s;
-}
-.node.n6 {
-  width: 9px;
-  height: 9px;
-  animation-duration: 32s, 2.5s;
-  animation-delay: -12s;
-}
-
-@keyframes move-node {
+@keyframes follow-path {
   0% {
-    transform: translate(0, 0);
+    offset-distance: 0%;
     opacity: 0;
   }
   10% {
     opacity: 1;
   }
   90% {
-    opacity: 1;
+     opacity: 1;
   }
   100% {
-    transform: translate(var(--tx, 100px), var(--ty, 100px));
+    offset-distance: 100%;
     opacity: 0;
   }
 }
 
-@keyframes pulse-node {
+@keyframes fade-particle {
+  0%, 100% { opacity: 0; }
+  10%, 90% { opacity: 1; }
+}
+
+/* Background bokeh effect */
+.bokeh-dot {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(3px);
+  animation: drift-dot 20s infinite alternate ease-in-out;
+}
+
+@keyframes drift-dot {
   from {
-    transform: scale(0.8);
-    box-shadow: 0 0 5px hsl(var(--ring)), 0 0 10px hsl(var(--ring) / 0.5);
-  }
-  to {
-    transform: scale(1.2);
-    box-shadow: 0 0 10px hsl(var(--ring)), 0 0 20px hsl(var(--ring) / 0.5);
-  }
-}
-
-.lines {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.line {
-  position: absolute;
-  background-color: hsl(var(--ring) / 0.2);
-  animation: fade-line 15s infinite;
-}
-
-@keyframes fade-line {
-  0%,
-  100% {
+    transform: translate(0, 0);
     opacity: 0;
   }
   50% {
-    opacity: 1;
+    opacity: 0.4;
+  }
+  to {
+    transform: translate(var(--tx, 50px), var(--ty, 50px));
+    opacity: 0;
   }
 }
