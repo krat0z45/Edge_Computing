@@ -49,7 +49,7 @@ export function HeroSection() {
         <div className="flex flex-col items-center space-y-4">
           <div className="space-y-2">
             <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl/none text-white">
-              Arquitectura de Edge Computing
+              Edge Computing Architecture
             </h1>
             <p className="mx-auto max-w-[700px] text-gray-300 md:text-xl">
               Explorando los patrones, factores y herramientas que definen los
