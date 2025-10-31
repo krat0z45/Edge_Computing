@@ -4,23 +4,6 @@ import Link from 'next/link';
 import React from 'react';
 
 function NeuralNetworkAnimation() {
-  const BOKEH_COUNT = 20;
-
-  const bokehDots = Array.from({ length: BOKEH_COUNT }, (_, i) => {
-    const size = Math.random() * 30 + 10;
-    const style: React.CSSProperties = {
-      width: `${size}px`,
-      height: `${size}px`,
-      top: `${Math.random() * 100}%`,
-      left: `${Math.random() * 100}%`,
-      backgroundColor: `hsla(${Math.random() * 60 + 180}, 70%, 60%, 0.5)`,
-      animationDelay: `${Math.random() * -20}s`,
-      '--tx': `${Math.random() * 200 - 100}px`,
-      '--ty': `${Math.random() * 200 - 100}px`,
-    };
-    return <div key={`bokeh-${i}`} className="bokeh-dot" style={style} />;
-  });
-
   const particlePaths = [
     'path-1',
     'path-2',
@@ -34,7 +17,6 @@ function NeuralNetworkAnimation() {
 
   return (
     <div className="neural-network-animation absolute top-0 left-0 w-full h-full -z-10 bg-gradient-to-br from-cyan-900/30 via-transparent to-indigo-900/30">
-      {bokehDots}
       <svg
         viewBox="0 0 400 200"
         xmlns="http://www.w3.org/2000/svg"
@@ -103,23 +85,22 @@ function NeuralNetworkAnimation() {
         <circle cx="80" cy="160" r="7" className="nn-node" />
         <circle cx="280" cy="50" r="5" className="nn-node" />
         <circle cx="280" cy="150" r="5" className="nn-node" />
-        
+
         {/* Highlighted Nodes */}
         <g>
           <circle cx="150" cy="100" r="10" className="nn-node-highlight red" />
           <circle cx="150" cy="100" r="5" className="nn-node-core" />
         </g>
-         <g>
+        <g>
           <circle cx="280" cy="50" r="5" className="nn-node-highlight yellow" />
           <circle cx="280" cy="50" r="2.5" className="nn-node-core" />
         </g>
-         <g>
+        <g>
           <circle cx="80" cy="160" r="7" className="nn-node-highlight red" />
           <circle cx="80" cy="160" r="3.5" className="nn-node-core" />
         </g>
-
       </svg>
-      
+
       {/* Particles */}
       {particlePaths.map((pathId, i) => (
         <div
@@ -131,11 +112,9 @@ function NeuralNetworkAnimation() {
           }}
         />
       ))}
-
     </div>
   );
 }
-
 
 export function HeroSection() {
   return (

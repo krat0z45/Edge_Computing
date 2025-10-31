@@ -86,7 +86,6 @@
   }
 }
 
-
 /* --- Neural Network Animation --- */
 .neural-network-animation {
   position: absolute;
@@ -114,6 +113,7 @@
   stroke-width: 0.5;
   stroke: hsl(var(--ring) / 0.3);
   fill: none;
+  stroke-dasharray: 2 4;
 }
 
 .nn-node {
@@ -185,7 +185,7 @@
     opacity: 1;
   }
   90% {
-     opacity: 1;
+    opacity: 1;
   }
   100% {
     offset-distance: 100%;
@@ -194,28 +194,12 @@
 }
 
 @keyframes fade-particle {
-  0%, 100% { opacity: 0; }
-  10%, 90% { opacity: 1; }
-}
-
-/* Background bokeh effect */
-.bokeh-dot {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(3px);
-  animation: drift-dot 20s infinite alternate ease-in-out;
-}
-
-@keyframes drift-dot {
-  from {
-    transform: translate(0, 0);
+  0%,
+  100% {
     opacity: 0;
   }
-  50% {
-    opacity: 0.4;
-  }
-  to {
-    transform: translate(var(--tx, 50px), var(--ty, 50px));
-    opacity: 0;
+  10%,
+  90% {
+    opacity: 1;
   }
 }
