@@ -437,8 +437,8 @@ export function EdgeSimulator() {
            <Card className="flex-1 min-w-0 bg-card/80">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg md:text-xl">
-                  <Server className="h-6 w-6 text-primary" />
-                  <span>Computadora a Bordo (Gateway) y Maqueta</span>
+                  <Car className="h-6 w-6 text-primary" />
+                  <span>Simulacion Vehículo Autónomo</span>
                 </CardTitle>
               </CardHeader>
               <CardContent>
