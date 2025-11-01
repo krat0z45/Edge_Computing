@@ -283,7 +283,7 @@ const ExplanationContent = () => (
       <p className='mt-2'>⏱️ Tiempo de respuesta local: <strong>~0.02–0.05 segundos</strong></p>
       <p>⏳ Tiempo de comunicación con la nube: <strong>~0.5 segundos</strong> (demasiado lento para emergencias)</p>
 
-     <h3 className="text-xl font-bold text-primary mt-6">Conclusión para tu Presentación</h3>
+     <h3 className="text-xl font-bold text-primary mt-6">Conclusión</h3>
       <p className='mt-2'>Este ejemplo ilustra uno de los casos de uso más poderosos del Edge Computing: sistemas autónomos de seguridad crítica. Al mover la inteligencia desde la nube hacia el "borde" (el propio vehículo), se logra:</p>
       <ul className="list-disc list-inside space-y-1 mt-2">
         <li>✅ Respuesta en tiempo real</li>
