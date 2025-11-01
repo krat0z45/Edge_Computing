@@ -23,6 +23,16 @@ const edgeArchitecturePattern = [
     ],
   },
   {
+    factor: 'Components',
+    description: [
+      'Nodos Edge (dispositivos, sensores, gateways).',
+      'Red del Borde (LAN, 5G, Wi-Fi).',
+      'Gateway hacia la Nube (para sincronización).',
+      'Servicios en la Nube (para procesamiento no crítico y almacenamiento).',
+    ],
+    isList: true,
+  },
+  {
     factor: 'Data Elements',
     description: [
       'Flujos de datos en tiempo real, resultados procesados localmente, metadatos, señales de control.',
