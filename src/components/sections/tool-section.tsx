@@ -144,6 +144,158 @@ if __name__ == "__main__":
     run_simulation()
 `.trim();
 
+const ExplanationContent = () => (
+  <div className="prose prose-invert max-w-none text-muted-foreground p-4">
+    <h3 className="text-xl font-bold text-primary flex items-center gap-2">
+      <span role="img" aria-label="car">
+        🚗
+      </span>{' '}
+      Ejemplo Práctico: Edge Computing en un Coche Autónomo
+    </h3>
+    <h4 className="font-semibold text-foreground mt-4">Objetivo</h4>
+    <p>
+      Demostrar cómo la arquitectura de Edge Computing permite tomar decisiones
+      críticas en tiempo real en un vehículo autónomo, minimizando la
+      dependencia de la nube y reduciendo la latencia.
+    </p>
+
+    <h3 className="text-xl font-bold text-primary mt-6">Arquitectura por Capas</h3>
+    <p>
+      El sistema se organiza en tres capas fundamentales, siguiendo el patrón
+      de Edge Computing:
+    </p>
+    <div className="space-y-4 mt-4">
+      <div>
+        <h4 className="font-semibold text-foreground">
+          1. Capa de Dispositivos Edge (Sensores del Coche)
+        </h4>
+        <ul className="list-disc list-inside space-y-1 mt-2">
+          <li>Representada por la clase <code>CarSensors</code>.</li>
+          <li>
+            Simula sensores físicos del vehículo (como LiDAR, cámaras o sensores
+            de fallo mecánico).
+          </li>
+          <li>
+            Genera eventos en tiempo real:
+            <ul className="list-['-_'] list-inside ml-4">
+              <li>
+                <code>obstacle_detected</code>: detecta un obstáculo cercano.
+              </li>
+              <li>
+                <code>accelerator_failure</code>: detecta una falla crítica en
+                el acelerador.
+              </li>
+            </ul>
+          </li>
+          <li>
+            Característica clave: produce datos críticos que requieren respuesta
+            inmediata.
+          </li>
+        </ul>
+      </div>
+      <div>
+        <h4 className="font-semibold text-foreground">
+          2. Capa de Gateway Edge (Computadora a Bordo)
+        </h4>
+        <ul className="list-disc list-inside space-y-1 mt-2">
+          <li>Representada por la clase <code>EdgeGateway</code>.</li>
+          <li>Actúa como el "cerebro local" del vehículo.</li>
+          <li>
+            Procesa los datos localmente sin esperar a la nube:
+            <ul className="list-['-_'] list-inside ml-4">
+              <li>Si hay un obstáculo → activa el frenado de emergencia.</li>
+              <li>
+                Si hay falla en el acelerador → anula el sistema para evitar
+                accidentes.
+              </li>
+            </ul>
+          </li>
+          <li>Solo después de actuar, envía un reporte a la nube.</li>
+          <li>
+            Ventaja: toma decisiones en milisegundos, esencial para la
+            seguridad.
+          </li>
+        </ul>
+      </div>
+      <div>
+        <h4 className="font-semibold text-foreground">3. Capa de Nube Central</h4>
+        <ul className="list-disc list-inside space-y-1 mt-2">
+          <li>Representada por la clase <code>Cloud</code>.</li>
+          <li>No participa en la toma de decisiones en tiempo real.</li>
+          <li>
+            Se encarga de:
+            <ul className="list-['-_'] list-inside ml-4">
+              <li>Registrar incidentes.</li>
+              <li>Almacenar logs para análisis posterior.</li>
+              <li>
+                Generar alertas globales (ej.: notificar al fabricante sobre
+                fallas recurrentes).
+              </li>
+            </ul>
+          </li>
+          <li>
+            Latencia simulada: 0.5 segundos, para reflejar el retraso típico de
+            una conexión a internet.
+          </li>
+        </ul>
+      </div>
+    </div>
+    <h3 className="text-xl font-bold text-primary mt-6">
+      ¿Por Qué Usar Edge Computing Aquí?
+    </h3>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 text-sm">
+      <div className="border p-4 rounded-lg bg-card/50">
+        <p className="font-bold">Obstáculo en la carretera (Sin Edge)</p>
+        <p className="text-red-400">
+          El coche envía datos a la nube → espera respuesta → frena (¡demasiado
+          tarde!)
+        </p>
+      </div>
+      <div className="border p-4 rounded-lg bg-card/50">
+        <p className="font-bold">Obstáculo en la carretera (Con Edge)</p>
+        <p className="text-green-400">
+          El coche <strong className='text-green-300'>frena inmediatamente</strong> usando su computadora a bordo.
+        </p>
+      </div>
+       <div className="border p-4 rounded-lg bg-card/50">
+        <p className="font-bold">Falla crítica (Sin Edge)</p>
+        <p className="text-red-400">
+          Depende de la nube para desactivar sistemas → riesgo de accidente.
+        </p>
+      </div>
+       <div className="border p-4 rounded-lg bg-card/50">
+        <p className="font-bold">Falla crítica (Con Edge)</p>
+        <p className="text-green-400">
+          <strong className='text-green-300'>Anula el sistema localmente</strong> en milisegundos → evita peligro.
+        </p>
+      </div>
+    </div>
+    <p className='mt-4'><strong className="text-foreground">✅ Conclusión: Edge Computing es imprescindible en aplicaciones donde la latencia puede costar vidas.</strong></p>
+
+    <h3 className="text-xl font-bold text-primary mt-6">Flujo de Ejecución (Simulación)</h3>
+      <ul className="list-disc list-inside space-y-1 mt-2">
+        <li>Los sensores detectan un obstáculo → generan evento.</li>
+        <li>El gateway edge procesa el evento localmente y activa el frenado.</li>
+        <li>Luego, informa a la nube del incidente.</li>
+        <li>Separadamente, se simula una falla del acelerador → el gateway anula el sistema.</li>
+        <li>La nube recibe un reporte crítico después de que la emergencia ya fue contenida.</li>
+      </ul>
+      <p className='mt-2'>⏱️ Tiempo de respuesta local: <strong>~0.02–0.05 segundos</strong></p>
+      <p>⏳ Tiempo de comunicación con la nube: <strong>~0.5 segundos</strong> (demasiado lento para emergencias)</p>
+
+     <h3 className="text-xl font-bold text-primary mt-6">Conclusión para tu Presentación</h3>
+      <p className='mt-2'>Este ejemplo ilustra uno de los casos de uso más poderosos del Edge Computing: sistemas autónomos de seguridad crítica. Al mover la inteligencia desde la nube hacia el "borde" (el propio vehículo), se logra:</p>
+      <ul className="list-disc list-inside space-y-1 mt-2">
+        <li>✅ Respuesta en tiempo real</li>
+        <li>✅ Reducción de tráfico de red</li>
+        <li>✅ Operación continua incluso con conexión intermitente</li>
+        <li>✅ Mayor seguridad y confiabilidad</li>
+      </ul>
+      <p className='mt-2'>Este enfoque es clave en la industria automotriz, manufactura inteligente, salud remota y ciudades inteligentes.</p>
+  </div>
+);
+
+
 export function ToolSection() {
   return (
     <section id="tool" className="w-full py-12 md:py-24 lg:py-32 bg-background">
@@ -159,15 +311,19 @@ export function ToolSection() {
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="react">
-              <TabsList className="grid w-full grid-cols-2">
+              <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="react">JavaScript (React)</TabsTrigger>
                 <TabsTrigger value="python">Python (Simulación)</TabsTrigger>
+                <TabsTrigger value="explanation">Explicación</TabsTrigger>
               </TabsList>
               <TabsContent value="react">
                 <CodeBlock>{reactLogicCode}</CodeBlock>
               </TabsContent>
               <TabsContent value="python">
                 <CodeBlock>{pythonLogicCode}</CodeBlock>
+              </TabsContent>
+              <TabsContent value="explanation">
+                <ExplanationContent />
               </TabsContent>
             </Tabs>
           </CardContent>
