@@ -5,47 +5,29 @@ import {
   CardTitle,
   CardDescription,
 } from '@/components/ui/card';
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '@/components/ui/tabs';
 import { CodeBlock } from '@/components/code-block';
 
-const simulatorLogicCode = `
+const reactLogicCode = `
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 
-// ... (Tipos de datos omitidos para brevedad) ...
+// ... (Componentes y tipos omitidos para brevedad) ...
 
-export function EdgeSimulatorLogic() {
+export function EdgeSimulator() {
   const [deviceLogs, setDeviceLogs] = useState([]);
   const [gatewayLogs, setGatewayLogs] = useState([]);
   const [cloudLogs, setCloudLogs] = useState([]);
-  const [isSimulating, setIsSimulating] = useState(false);
-  const [carStatus, setCarStatus] = useState('normal');
-  const [simulationData, setSimulationData] = useState({ speed: 0, obstacle: false, failure: false });
+  // ... (Otros estados) ...
 
   const addLog = (setLogs, message, type) => {
-    const timestamp = new Date().toLocaleTimeString('es-ES');
-    setLogs((prev) => [{ message, type, timestamp }, ...prev]);
-  };
-
-  const simulateProgressiveChange = (start, end, duration, stepCallback, finalCallback) => {
-    const change = end - start;
-    const steps = duration / 50;
-    const increment = change / steps;
-    let currentValue = start;
-    let stepCount = 0;
-    
-    const simInterval = setInterval(() => {
-      stepCount++;
-      if (stepCount >= steps) {
-        currentValue = end;
-        clearInterval(simInterval);
-        stepCallback(currentValue);
-        finalCallback();
-      } else {
-        currentValue += increment;
-        stepCallback(currentValue);
-      }
-    }, 50);
+    // ... (Añade una entrada al log con timestamp) ...
   };
 
   const simulateDeviceEvent = (type) => {
@@ -53,50 +35,113 @@ export function EdgeSimulatorLogic() {
     setIsSimulating(true);
 
     if (type === 'obstacle') {
+        // 1. SENSOR (EDGE) GENERA EL DATO
         addLog(setDeviceLogs, '¡Obstáculo detectado!', 'alert');
-        setSimulationData(prev => ({...prev, obstacle: true}));
         
+        // Simula la latencia de la red local (muy baja)
         setTimeout(() => {
+             // 2. GATEWAY (EDGE) PROCESA Y ACTÚA
              addLog(setGatewayLogs, 'Obstáculo confirmado. Iniciando frenado de emergencia.', 'action');
              setCarStatus('braking');
-             simulateProgressiveChange(simulationData.speed, 0, 1500,
-                (speed) => setSimulationData(prev => ({ ...prev, speed })),
-                () => {
-                    addLog(setGatewayLogs, 'Vehículo detenido.', 'info');
-                    addLog(setCloudLogs, 'Incidente de Frenado de Emergencia registrado.', 'summary');
-                    // ... Lógica para reanudar la marcha ...
-                    setIsSimulating(false);
-                }
-             );
-        }, 500); // Latencia simulada del gateway
+             // ... (Lógica de simulación de frenado) ...
+
+             // 3. GATEWAY (EDGE) ENVÍA REPORTE A LA NUBE (DESPUÉS DE ACTUAR)
+             addLog(setCloudLogs, 'Incidente de Frenado de Emergencia registrado.', 'summary');
+             
+             setIsSimulating(false);
+        }, 500); // Latencia simulada del gateway: 500ms
     }
     
     if (type === 'failure') {
+        // 1. SENSOR (EDGE) DETECTA UNA FALLA CRÍTICA
         addLog(setDeviceLogs, '¡Falla detectada en el sistema del acelerador!', 'alert');
-        setSimulationData(prev => ({ ...prev, failure: true }));
         setCarStatus('failure');
         
+        // Latencia aún más baja para decisiones críticas
         setTimeout(() => {
-            addLog(setGatewayLogs, 'Anomalía Crítica: Aceleración no controlada.', 'warning');
-            simulateProgressiveChange(simulationData.speed, 150, 1000, 
-            (speed) => setSimulationData(prev => ({ ...prev, speed })),
-            () => {
-                addLog(setGatewayLogs, '¡PELIGRO INMINENTE! Anulando sistema de aceleración AHORA.', 'action');
-                setCarStatus('braking');
-                simulateProgressiveChange(160, 0, 2000,
-                (speed) => setSimulationData(prev => ({ ...prev, speed })),
-                () => {
-                    addLog(setGatewayLogs, 'Falla contenida. El vehículo se ha detenido.', 'info');
-                    addLog(setCloudLogs, 'Falla Crítica de Acelerador Registrada.', 'alert');
-                    setIsSimulating(false);
-                });
-            });
-        }, 200); // Latencia muy baja para una anulación crítica en el Edge
+            // 2. GATEWAY (EDGE) ANULA EL SISTEMA LOCALMENTE
+            addLog(setGatewayLogs, '¡PELIGRO INMINENTE! Anulando sistema de aceleración AHORA.', 'action');
+            // ... (Lógica de anulación y frenado) ...
+
+            // 3. GATEWAY (EDGE) REPORTA LA FALLA A LA NUBE
+            addLog(setCloudLogs, 'Falla Crítica de Acelerador Registrada.', 'alert');
+            setIsSimulating(false);
+        }, 200); // Latencia crítica del Edge: 200ms
     }
   };
 
   // ... (El resto es la renderización del componente con JSX) ...
 }
+`.trim();
+
+const pythonLogicCode = `
+import time
+
+# --- Capa 1: Dispositivo Edge (Sensores del Coche) ---
+class CarSensors:
+    def detect_obstacle(self):
+        print("[SENSOR]: ¡Obstáculo detectado!")
+        return {"event": "obstacle_detected", "distance": 10}
+
+    def detect_system_failure(self):
+        print("[SENSOR]: ¡Falla crítica en el acelerador!")
+        return {"event": "accelerator_failure"}
+
+# --- Capa 2: Gateway Edge (Computadora a Bordo) ---
+class EdgeGateway:
+    def __init__(self, cloud):
+        self.cloud = cloud
+
+    def process_data(self, data):
+        print(f"[GATEWAY]: Dato recibido: {data['event']}")
+        
+        if data["event"] == "obstacle_detected":
+            # Decisión en tiempo real con baja latencia
+            print("[GATEWAY]: ¡ACCIÓN! Frenado de emergencia activado.")
+            time.sleep(0.05)  # Simula el tiempo de procesamiento local
+            print("[GATEWAY]: Vehículo detenido.")
+            # Después de actuar, envía un reporte a la nube
+            self.cloud.log_incident("Incidente de frenado por obstáculo.")
+            
+        elif data["event"] == "accelerator_failure":
+            # Decisión crítica para anular el sistema
+            print("[GATEWAY]: ¡ACCIÓN CRÍTICA! Anulando sistema del acelerador.")
+            time.sleep(0.02)  # Procesamiento ultra rápido
+            print("[GATEWAY]: Sistema anulado. Falla contenida.")
+            # Reporta el evento crítico a la nube
+            self.cloud.log_critical_failure("Falla de acelerador contenida por el gateway.")
+
+# --- Capa 3: Nube Central ---
+class Cloud:
+    def log_incident(self, message):
+        # Simula la latencia de la red hacia la nube
+        time.sleep(0.5) 
+        print(f"[NUBE]: Reporte recibido y almacenado - '{message}'")
+
+    def log_critical_failure(self, message):
+        time.sleep(0.5)
+        print(f"[NUBE]: ALERTA GLOBAL - '{message}'")
+
+# --- Simulación ---
+def run_simulation():
+    # Inicialización del sistema
+    cloud_server = Cloud()
+    car_computer = EdgeGateway(cloud_server)
+    car_sensors = CarSensors()
+
+    print("--- Simulación de Coche Autónomo con Edge Computing ---")
+    
+    # Evento 1: Obstáculo en el camino
+    print("\\n--- Evento: Obstáculo detectado ---")
+    obstacle_data = car_sensors.detect_obstacle()
+    car_computer.process_data(obstacle_data)
+    
+    print("\\n--- Evento: Falla Crítica del Sistema ---")
+    failure_data = car_sensors.detect_system_failure()
+    car_computer.process_data(failure_data)
+
+if __name__ == "__main__":
+    run_simulation()
 `.trim();
 
 export function ToolSection() {
@@ -113,7 +158,18 @@ export function ToolSection() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <CodeBlock>{simulatorLogicCode}</CodeBlock>
+            <Tabs defaultValue="react">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="react">JavaScript (React)</TabsTrigger>
+                <TabsTrigger value="python">Python (Simulación)</TabsTrigger>
+              </TabsList>
+              <TabsContent value="react">
+                <CodeBlock>{reactLogicCode}</CodeBlock>
+              </TabsContent>
+              <TabsContent value="python">
+                <CodeBlock>{pythonLogicCode}</CodeBlock>
+              </TabsContent>
+            </Tabs>
           </CardContent>
         </Card>
       </div>
